@@ -51,6 +51,16 @@ const employeeSchema = Yup.object().shape({
   aadharNo: Yup.string().required("Aadhar Number is required."),
   gender: Yup.string().required("Gender is required."),
   bloodGroup: Yup.string().required("Blood Group is required."),
+  emergencyNo1: Yup.string()
+    .matches(phoneRegExp, "Emergency number is not valid")
+    .min(10, "too short")
+    .max(10, "too long")
+    .required("Emergency number is required."),
+  emergencyNo2: Yup.string()
+    .matches(phoneRegExp, "Emergency number is not valid")
+    .min(10, "too short")
+    .max(10, "too long")
+    .required("Emergency number is required."),
   // aadharFront: Yup.object().shape({
   //   text: Yup.string().required("A text is required"),
   //   file: Yup.mixed()
@@ -296,6 +306,7 @@ export default function EditEmployee({ employee }) {
           <div className="flex flex-wrap -mx-4 overflow-hidden">
             <div className="my-4 px-4 w-full overflow-hidden lg:w-4/6">
               <Formik
+                enableReinitialize
                 initialValues={{
                   name: employee?.name,
                   email: employee?.email,
@@ -313,6 +324,8 @@ export default function EditEmployee({ employee }) {
                   bloodGroup: employee?.bloodGroup,
                   aadharFront: employee?.aadharImages.front,
                   aadharBack: employee?.aadharImages.back,
+                  emergencyNo2: employee?.emergencyNo2,
+                  emergencyNo1: employee?.emergencyNo1,
                 }}
                 onSubmit={handleEmployeeSubmission}
                 validationSchema={employeeSchema}
@@ -718,10 +731,67 @@ export default function EditEmployee({ employee }) {
                         <p className="text-red-800">{errors.bloodGroup}</p>
                       ) : null}
                     </div>
-                    <div className=" relative md:w-1/2 mt-5">
+                    <div className="my-4 px-4 w-full overflow-hidden md:w-1/2">
+                      <div className="form-group space-y-2">
+                        <label>Employee's Emergency Number 1</label>
+                        <Input
+                          // label="Supervisor's DOB"
+                          variant="standard"
+                          type="tel"
+                          name="emergencyNo1"
+                          placeholder="Enter Emergency Number 1"
+                          // autoComplete="off"
+                          onChange={handleChange("emergencyNo1")}
+                          onBlur={handleBlur("emergencyNo1")}
+                          value={values.emergencyNo1}
+                          required
+                          className="w-full py-1 my-2"
+                          error={
+                            errors.emergencyNo1 && touched.emergencyNo1
+                              ? true
+                              : false
+                          }
+                          inputProps={{ maxLength: 10 }}
+                        />
+                      </div>
+                      {errors.emergencyNo1 && touched.emergencyNo1 ? (
+                        <p className="text-red-800">{errors.emergencyNo1}</p>
+                      ) : null}
+                    </div>
+
+                    <div className="my-4 px-4 w-full overflow-hidden md:w-1/2">
+                      <div className="form-group space-y-2">
+                        <label>Employee's Emergency Number 2</label>
+                        <Input
+                          // label="Supervisor's DOB"
+                          variant="standard"
+                          type="tel"
+                          name="emergencyNo2"
+                          inputProps={{ maxLength: 10 }}
+                          placeholder="Enter Emergency Number 2"
+                          // autoComplete="off"
+                          onChange={handleChange("emergencyNo2")}
+                          onBlur={handleBlur("emergencyNo2")}
+                          value={values.emergencyNo2}
+                          required
+                          className="w-full py-1 my-2"
+                          error={
+                            errors.emergencyNo2 && touched.emergencyNo2
+                              ? true
+                              : false
+                          }
+                        />
+                      </div>
+                      {errors.emergencyNo2 && touched.emergencyNo2 ? (
+                        <p className="text-red-800">{errors.emergencyNo2}</p>
+                      ) : null}
+                    </div>
+
+                    <div className=" relative  px-4 md:w-1/2 mt-5">
+                      <label>Employee's Aadhar Front Images</label>
                       <img
                         src={values.aadharFront}
-                        className="hue-300 h-50 w-full"
+                        className="hue-300 h-50 mt-3 w-full"
                         alt="..."
                         quality={60}
                         height={110}
@@ -741,7 +811,7 @@ export default function EditEmployee({ employee }) {
                           }}
                           style={{ display: "none" }}
                         />
-                        <IconButton
+                        <Button
                           color="primary"
                           aria-label="upload picture"
                           component="span"
@@ -749,16 +819,17 @@ export default function EditEmployee({ employee }) {
                         >
                           <PhotoCamera />
                           <span className="pl-2"> Change Front Image</span>
-                        </IconButton>
+                        </Button>
                       </label>
                     </div>
                     {errors.aadharFront && touched.aadharFront ? (
                       <p className="text-red-800">{errors.aadharFront}</p>
                     ) : null}
-                    <div className="relative md:w-1/2 mt-5">
+                    <div className="relative  px-4 md:w-1/2 mt-5">
+                      <label>Employee's Aadhar Back Images</label>
                       <img
                         src={values.aadharBack}
-                        className="hue-300 h-50 w-full"
+                        className="hue-300 mt-3 h-50 w-full"
                         alt="..."
                         quality={60}
                         height={110}
@@ -780,7 +851,7 @@ export default function EditEmployee({ employee }) {
                           }}
                           style={{ display: "none" }}
                         />
-                        <IconButton
+                        <Button
                           color="primary"
                           aria-label="upload picture"
                           component="span"
@@ -788,7 +859,7 @@ export default function EditEmployee({ employee }) {
                         >
                           <PhotoCamera />
                           <span className="pl-2"> Change Back Image</span>
-                        </IconButton>
+                        </Button>
                       </label>
                     </div>
                     {errors.aadharBack && touched.aadharBack ? (
@@ -838,7 +909,7 @@ export default function EditEmployee({ employee }) {
                     onChange={handleProfilePhotoUpdate}
                     style={{ display: "none" }}
                   />
-                  <IconButton
+                  <Button
                     color="primary"
                     aria-label="upload picture"
                     component="span"
@@ -846,7 +917,7 @@ export default function EditEmployee({ employee }) {
                   >
                     <PhotoCamera />
                     <span className="pl-2"> Change Banner Image</span>
-                  </IconButton>
+                  </Button>
                 </label>
               </div>
             </div>
