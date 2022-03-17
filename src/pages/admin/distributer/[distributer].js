@@ -72,7 +72,7 @@ export default function Distributer({
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
             </li>
             <li className="pr-2 text-[16px]  text-[#ffffff]">
-              <Link href="/admin/distributer"> Distributer Management </Link>
+              <Link href="/admin/distributer"> Distributor Management </Link>
             </li>
             <li className="pr-2">
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
@@ -90,7 +90,7 @@ export default function Distributer({
                   query: { distributer: distributer._id },
                 }}
               >
-                <a> Add Distributer</a>
+                <a> Add Distributor</a>
               </Link>
             </li>
           </ul>
@@ -209,7 +209,7 @@ export default function Distributer({
             (color === "light" ? "bg-white" : "bg-slate-700 text-white")
           }
         >
-          <div className="rounded-t mb-0 px-4 py-3 border-0">
+          {/* <div className="rounded-t mb-0 px-4 py-3 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full text-center flex-grow flex-1">
                 <h2
@@ -223,9 +223,9 @@ export default function Distributer({
                 </h2>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="block w-full overflow-x-auto">
-            <table className="items-center w-full bg-transparent border-collapse">
+            {/* <table className="items-center w-full bg-transparent border-collapse">
               <thead>
                 <tr>
                   <th
@@ -349,7 +349,7 @@ export default function Distributer({
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table> */}
 
             {/* <Paginate
               page={router.query.page}

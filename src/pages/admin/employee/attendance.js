@@ -30,7 +30,7 @@ export async function getServerSideProps({ query }) {
 
 export default function Attendance({ employee, emps }) {
   const source = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBpF6UO18TuzqIXwWlpZzQ9FJvV74xCmK8&callback=initMap`;
-
+  // console.log(employee);
   const googlemap = useRef(null);
   useEffect(() => {
     const loader = new Loader({
@@ -111,6 +111,16 @@ export default function Attendance({ employee, emps }) {
                       : "bg-slate-600 text-slate-200 border-slate-500")
                   }
                 >
+                  Date
+                </th>
+                <th
+                  className={
+                    "px-6 align-middle border-2 border-[#475569] py-3 text-base uppercase  whitespace-nowrap font-semibold text-left " +
+                    (color === "light"
+                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                      : "bg-slate-600 text-slate-200 border-slate-500")
+                  }
+                >
                   SignIn Time
                 </th>
                 <th
@@ -135,9 +145,17 @@ export default function Attendance({ employee, emps }) {
                         +(color === "light" ? "text-slate-600" : "text-white")
                       }
                     >
-                      {moment(`${item.date} ${item.signIn}`).format(
-                        "Do, MMMM YYYY, hh:mm a"
-                      )}
+                      {moment(` ${item.date}`).format("Do, MMMM YYYY")}
+                    </span>
+                  </th>
+                  <th className="  border-2 border-[#475569] text-xs whitespace-nowrap p-4 text-left capitalize">
+                    <span
+                      className={
+                        "font-bold capitalize" +
+                        +(color === "light" ? "text-slate-600" : "text-white")
+                      }
+                    >
+                      {moment(` ${item.signIn}`).format("hh:mm A")}
                     </span>
                   </th>
                   <th className="  border-2 border-[#475569] text-xs whitespace-nowrap p-4 text-left capitalize">
@@ -147,9 +165,7 @@ export default function Attendance({ employee, emps }) {
                         +(color === "light" ? "text-slate-600" : "text-white")
                       }
                     >
-                      {moment(`${item.date} ${item.signOut}`).format(
-                        "Do, MMMM YYYY, hh:mm a"
-                      )}
+                      {moment(` ${item.signOut}`).format("hh:mm A")}
                     </span>
                   </th>
                 </tr>
