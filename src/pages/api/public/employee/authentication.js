@@ -44,6 +44,7 @@ handler.get(async (req, res) => {
           name: 1,
           phone: 1,
         },
+        modelName: 1,
       },
     },
   ])

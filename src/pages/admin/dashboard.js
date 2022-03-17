@@ -18,13 +18,23 @@ export default function Dashboard() {
   return (
     <>
       <section className="flex flex-wrap  ">
-        <div className="w-full overflow-hidden xl:w-1/4 cursor-pointer">
+        {/* <div className="w-full overflow-hidden xl:w-1/4 cursor-pointer">
           <Link href="/admin/vendor/add-vendor">
             <div className={`text-center`}>
               <Image
                 src={require("../../../public/images/dashboard/vendor.png")}
               />
               <h2> Add Vendor </h2>
+            </div>
+          </Link>
+        </div> */}
+        <div className="w-full overflow-hidden xl:w-1/4 cursor-pointer">
+          <Link href="/admin/distributer/add-distributer">
+            <div className={`text-center`}>
+              <Image
+                src={require("../../../public/images/dashboard/vendor.png")}
+              />
+              <h2> Add Distributor </h2>
             </div>
           </Link>
         </div>

@@ -138,7 +138,7 @@ export default function AddDistributer() {
             </li>
 
             <li className="pr-2 text-[18px] pt-1  text-[#ffffff]">
-              <Link href="/admin/distributer"> Distributer Management </Link>
+              <Link href="/admin/distributer"> Distributor Management </Link>
             </li>
 
             <li className="pr-2 pt-2">
@@ -147,7 +147,7 @@ export default function AddDistributer() {
 
             <li className="pr-2 text-[18px] pt-1  text-[#ffffff]">
               <Link href="/admin/distributer/add-distributer">
-                Add Distributer
+                Add Distributor
               </Link>
             </li>
           </ul>
@@ -164,7 +164,7 @@ export default function AddDistributer() {
           <DialogTitle id="alert-dialog-title">{"Success"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Distributer added successfully.
+              Distributor added successfully.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -173,7 +173,7 @@ export default function AddDistributer() {
         </Dialog>
 
         <h1 className="text-2xl bg-[#efefef] mb-4  pt-4 pb-4 text-[#353435] px-[20px] font-bold tracking-widest text-center">
-          Add Distributer
+          Add Distributor
         </h1>
 
         <Formik
@@ -211,11 +211,11 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's Name"
+                    label="Distributor's Name"
                     variant="standard"
                     type="text"
                     name="name"
-                    placeholder="Enter Distributer's Full Name"
+                    placeholder="Enter Distributor's Full Name"
                     // autoComplete="off"
                     onChange={({ target }) => {
                       const name = target.value;
@@ -246,11 +246,11 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's Slug"
+                    label="Distributor's Slug"
                     variant="standard"
                     type="text"
                     name="slug"
-                    placeholder="Enter Distributer's Slug"
+                    placeholder="Enter Distributor's Slug"
                     // autoComplete="off"
                     onChange={handleChange("slug")}
                     onBlur={handleBlur("slug")}
@@ -268,11 +268,11 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's Email"
+                    label="Distributor's Email"
                     variant="standard"
                     type="email"
                     name="email"
-                    placeholder="Enter Distributer's Email Address"
+                    placeholder="Enter Distributor's Email Address"
                     // autoComplete="off"
                     onChange={handleChange("email")}
                     onBlur={handleBlur("email")}
@@ -290,11 +290,11 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/2">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's Mobile Number"
+                    label="Distributor's Mobile Number"
                     variant="standard"
                     type="tel"
                     name="phone"
-                    placeholder="Enter Distributer's Mobile Number"
+                    placeholder="Enter Distributor's Mobile Number"
                     // autoComplete="off"
                     onChange={handleChange("phone")}
                     onBlur={handleBlur("phone")}
@@ -313,7 +313,7 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/2">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's Category"
+                    label="Distributor's Category"
                     variant="standard"
                     type="text"
                     name="category"
@@ -366,7 +366,7 @@ export default function AddDistributer() {
                     onBlur={handleBlur("state")}
                     fullWidth
                     error={errors.state && touched.state ? true : false}
-                    placeholder="Enter Distributer's Mobile Number"
+                    placeholder="Enter Distributor's Mobile Number"
                     variant="standard"
                     displayEmpty
                   >
@@ -399,7 +399,7 @@ export default function AddDistributer() {
                     onBlur={handleBlur("city")}
                     fullWidth
                     error={errors.city && touched.city ? true : false}
-                    placeholder="Enter Distributer's Mobile Number"
+                    placeholder="Enter Distributor's Mobile Number"
                     variant="standard"
                     displayEmpty
                   >
@@ -422,11 +422,11 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's Pincode"
+                    label="Distributor's Pincode"
                     variant="standard"
                     type="tel"
                     name="pincode"
-                    placeholder="Enter Distributer's Pincode"
+                    placeholder="Enter Distributor's Pincode"
                     // autoComplete="off"
                     onChange={handleChange("pincode")}
                     onBlur={handleBlur("pincode")}
@@ -434,7 +434,7 @@ export default function AddDistributer() {
                     required
                     className="w-full py-1 my-2"
                     error={errors.pincode && touched.pincode ? true : false}
-                    inputProps={{ maxLength: 10 }}
+                    inputProps={{ maxLength: 6 }}
                   />
                 </div>
                 {errors.pincode && touched.pincode ? (
@@ -445,11 +445,11 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-full">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's Address"
+                    label="Distributor's Address"
                     variant="standard"
                     type="text"
                     name="address"
-                    placeholder="Distributer's Address"
+                    placeholder="Distributor's Address"
                     // autoComplete="off"
                     onChange={handleChange("address")}
                     onBlur={handleBlur("address")}
@@ -469,11 +469,11 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/2">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's GST"
+                    label="Distributor's GST"
                     variant="standard"
                     type="text"
                     name="gst"
-                    placeholder="Enter Distributer's GST"
+                    placeholder="Enter Distributor's GST"
                     // autoComplete="off"
                     onChange={handleChange("gst")}
                     onBlur={handleBlur("gst")}
@@ -492,11 +492,11 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/2">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's PAN Number"
+                    label="Distributor's PAN Number"
                     variant="standard"
                     type="text"
                     name="pan"
-                    placeholder="Enter Distributer's PAN Number"
+                    placeholder="Enter Distributor's PAN Number"
                     // autoComplete="off"
                     onChange={handleChange("pan")}
                     onBlur={handleBlur("pan")}
@@ -515,11 +515,11 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/2">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's Location Longitude"
+                    label="Distributor's Location Longitude"
                     variant="standard"
                     type="text"
                     name="longitude"
-                    placeholder="Enter Distributer's Location Longitude"
+                    placeholder="Enter Distributor's Location Longitude"
                     // autoComplete="off"
                     onChange={handleChange("longitude")}
                     onBlur={handleBlur("longitude")}
@@ -538,11 +538,11 @@ export default function AddDistributer() {
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/2">
                 <div className="form-group space-y-2">
                   <Input
-                    label="Distributer's Location Latitude"
+                    label="Distributor's Location Latitude"
                     variant="standard"
                     type="text"
                     name="latitude"
-                    placeholder="Enter Distributer's Location Latitude"
+                    placeholder="Enter Distributor's Location Latitude"
                     // autoComplete="off"
                     onChange={handleChange("latitude")}
                     onBlur={handleBlur("latitude")}
@@ -564,7 +564,7 @@ export default function AddDistributer() {
                   type="submit"
                   className="inline-flex px-5 py-3 text-white bg-[#d86c07] hover:bg-purple-700 focus:bg-purple-700  rounded-md shadow mb-3"
                 >
-                  Add Distributer
+                  Add Distributor
                 </button>
               </div>
             </div>

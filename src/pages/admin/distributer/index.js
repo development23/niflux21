@@ -116,13 +116,13 @@ export default function Distributer({
             </li>
 
             <li className="pr-2 text-[18px] pt-1  text-[#ffffff]">
-              <Link href="/admin/distributer"> Distributer Management </Link>
+              <Link href="/admin/distributer"> Distributor Management </Link>
             </li>
           </ul>
           <ul className="flex justify-end ">
             <li className="pr-2 text-[16px] bg-[#fefefe] text-[#313131] font-semibold pl-4  pr-5 py-2 rounded-3xl ">
               <Link href="/admin/distributer/add-distributer">
-                Add distributer
+                Add distributor
               </Link>
             </li>
           </ul>
@@ -145,7 +145,7 @@ export default function Distributer({
                     (color === "light" ? "text-slate-700" : "text-white")
                   }
                 >
-                  Listing of distributer
+                  Listing of distributor
                 </h2>
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function Distributer({
                         : "bg-slate-600 text-slate-200 border-slate-500")
                     }
                   >
-                    distributer
+                    distributor
                   </th>
                   <th
                     className={

@@ -23,7 +23,7 @@ var bcrypt = require("bcryptjs");
 
 handler.put(async (req, result) => {
   //   console.log(req.body);
-  await Employee.updateOne({ _id: req.body.id }, req.body)
+  Employee.updateOne({ _id: req.body.id }, req.body)
     .then((res) => {
       result.status(201).json({ message: "record updated.", record: res });
     })

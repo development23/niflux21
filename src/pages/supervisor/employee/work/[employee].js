@@ -187,7 +187,7 @@ export default function Employee({ employeeData }) {
 
       <div className="block w-full overflow-x-auto">
         {/* Projects table */}
-        <input type="text" onChange={handleWorkSearch} />
+        {/* <input type="text" onChange={handleWorkSearch} /> */}
         <table className="items-center w-full bg-transparent border-collapse">
           <thead>
             <tr>
@@ -332,7 +332,8 @@ export default function Employee({ employeeData }) {
                       {item.siteStatus}
                     </td>
                     <td className="border-t-0 px-6 align-middle items-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                      <FormControl sx={{ minWidth: 80 }}>
+                      <p>{item.status}</p>
+                      <FormControl sx={{ minWidth: 80, marginTop: 1 }}>
                         <InputLabel id="demo-simple-select-label">
                           Status
                         </InputLabel>
@@ -346,7 +347,7 @@ export default function Employee({ employeeData }) {
                           }}
                         >
                           <MenuItem value={"Reviewed"}>Reviewed</MenuItem>
-                          <MenuItem value={"sdfsdf"}>sdfsdf</MenuItem>
+
                           <MenuItem value={"Remarked"}>Remarked</MenuItem>
                         </Select>
                       </FormControl>

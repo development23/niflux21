@@ -116,7 +116,7 @@ export default function AddSupervisor() {
             </li>
 
             <li className="pr-2 text-[18px] pt-1  text-[#ffffff]">
-              <Link href="/admin/Supervisor"> Supervisor Management </Link>
+              <Link href="/admin/supervisor"> Supervisor Management </Link>
             </li>
 
             <li className="pr-2 pt-2">

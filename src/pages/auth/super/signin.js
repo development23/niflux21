@@ -150,6 +150,7 @@ export default function Home({ csrfToken }) {
                         required
                         onChange={handleChange}
                         placeholder="***"
+                        onKeyPress={(e) => e.key === "Enter" && handleSubmit()}
                         className="w-full text-base rounded outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out "
                       />
                       <div

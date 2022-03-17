@@ -31,6 +31,7 @@ export default function Employee({ employee }) {
   const [sEid, setSEid] = useState(null);
   const previewRef = useRef(null);
   const [data, setData] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM"));
   let googlemap = useRef(null);
 
   useOutsideAlerter(previewRef);
@@ -125,7 +126,48 @@ export default function Employee({ employee }) {
           </ul>
         </div>
       </div>
+      <div className="mb-5">
+        {/* <button
+          onClick={() => {
+            handleThisMonthClaimFilter("thisMonth"),
+              setSelectedDate(moment().format("YYYY-MM"));
+          }}
+        >
+          <a className="bg-[#193f6b] ml-3 mb-5  px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+            This Month
+          </a>
+        </button> */}
+        {/* <button
+          onClick={() => {
+            handleThisMonthClaimFilter("lastMonth"),
+              setSelectedDate(moment().subtract(1, "M").format("YYYY-MM"));
+          }}
+        >
+          <a className="bg-[#193f6b] ml-3 mb-5  px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+            Last Month
+          </a>
+        </button> */}
 
+        {/* <span className="ml-5 mb-5 mt-5 ">
+          <input
+            type="month"
+            name="select month"
+            className="bg-gray-200 p-1 border-2 border-[#193f6b] mt-5"
+            value={selectedDate}
+            onChange={(e) => {
+              handleThisMonthClaimFilter(e.target.value),
+                setSelectedDate(e.target.value);
+            }}
+          />
+        </span> */}
+
+        <div className="mt-5 px-4">
+          <p className="text-2xl space-x-2">
+            <span className="font-semibold">Total Attendance:</span>
+            <span>{employee.attendance.length}</span>
+          </p>
+        </div>
+      </div>
       <div className="block w-full overflow-x-auto">
         {/* Projects table */}
         <table className="items-center w-full bg-transparent border-collapse">

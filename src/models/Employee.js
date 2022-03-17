@@ -294,6 +294,10 @@ const employeeSchema = new mongoose.Schema(
         default: null,
       },
     },
+    modelName: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );
