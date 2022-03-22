@@ -31,10 +31,10 @@ export default function Employee({ employee }) {
   const [sEid, setSEid] = useState(null);
   const previewRef = useRef(null);
   const [data, setData] = useState(null);
-  const [employeeCopy, setEmployeeCopy] = useState(employee);
-  const [selectedDate, setSelectedDate] = useState(
-    moment().format("YYYY-MM-DD")
-  );
+  // const [employeeCopy, setEmployeeCopy] = useState(employee);
+  // const [selectedDate, setSelectedDate] = useState(
+  //   moment().format("YYYY-MM-DD")
+  // );
   let googlemap = useRef(null);
 
   useOutsideAlerter(previewRef);
@@ -103,17 +103,15 @@ export default function Employee({ employee }) {
     }
   };
 
-  const handleFilter = (e) => {
-    console.log(selectedDate);
-    console.log(
-      moment(employeeCopy.locations[0].createdAt).format("YYYY-MM-DD")
-    );
-    console.log(
-      employeeCopy.locations.includes((e) => {
-        return moment(e.createdAt).format("YYYY-MM-DD") === selectedDate;
-      })
-    );
-  };
+  // const handleFilter = (e) => {
+  //   console.log(selectedDate);
+  //   console.log(employeeCopy.locations[0].createdAt);
+  //   console.log(
+  //     employeeCopy.locations.includes((e) => {
+  //       return moment(e.createdAt).format("YYYY-MM-DD") == selectedDate;
+  //     })
+  //   );
+  // };
   return (
     <>
       <div className="px-2 py-3 bg-slate-600 rounded pl-4 text-white shadow mb-5 backdrop-blur-[5px] space-y-1">
@@ -138,7 +136,7 @@ export default function Employee({ employee }) {
           </ul>
         </div>
       </div>
-      <div className="mb-5">
+      {/* <div className="mb-5">
         <button
           onClick={() => {
             employeeData = employeeDataCopy;
@@ -160,7 +158,7 @@ export default function Employee({ employee }) {
             }}
           />
         </span>
-      </div>
+      </div> */}
       <div className="block w-full overflow-x-auto">
         {/* Projects table */}
         <table className="items-center w-full bg-transparent border-collapse">
