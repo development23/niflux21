@@ -127,6 +127,10 @@ const employeeSchema = new mongoose.Schema(
               type: String,
               default: null,
             },
+            jointEmployee: {
+              type: Schema.Types.ObjectId,
+              default: null,
+            },
             remarks: [
               {
                 type: new mongoose.Schema(
@@ -228,6 +232,10 @@ const employeeSchema = new mongoose.Schema(
               type: [String],
               default: null,
             },
+            prescriptionImage: {
+              type: String,
+              default: null,
+            },
           },
           { timestamps: true }
         ),
@@ -271,7 +279,6 @@ const employeeSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-
     emergencyNo1: {
       type: String,
       default: null,

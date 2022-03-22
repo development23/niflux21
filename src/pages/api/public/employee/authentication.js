@@ -40,6 +40,8 @@ handler.get(async (req, res) => {
         beatsCount: { $size: "$beats" },
         leavesCount: { $size: "$leaves" },
         attendanceCount: { $size: "$attendance" },
+        emergencyNo1: 1,
+        emergencyNo2: 1,
         supervisorDetails: {
           name: 1,
           phone: 1,

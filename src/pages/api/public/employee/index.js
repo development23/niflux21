@@ -20,7 +20,15 @@ var bcrypt = require("bcryptjs");
 //       res.status(403).json({ message: "Something went wrong.", error: err })
 //     );
 // });
-
+handler.get(async (req, res) => {
+  Employee.find({ _id: { $ne: req.query.id } })
+    .then((data) => {
+      res.status(200).json({ message: "Success", data: data });
+    })
+    .catch((err) =>
+      res.status(403).json({ message: "Something went wrong", error: err })
+    );
+});
 handler.put(async (req, result) => {
   //   console.log(req.body);
   Employee.updateOne({ _id: req.body.id }, req.body)

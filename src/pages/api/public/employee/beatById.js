@@ -6,7 +6,6 @@ import moment from "moment";
 const handler = createHandler();
 
 handler.put((req, result) => {
-  console.log(req.body);
   Employee.updateOne(
     {
       _id: req.body.id,

@@ -181,6 +181,16 @@ export default function Employee({ employee }) {
                     : "bg-slate-600 text-slate-200 border-slate-500")
                 }
               >
+                Date
+              </th>
+              <th
+                className={
+                  "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                  (color === "light"
+                    ? "bg-slate-50 text-slate-500 border-slate-100"
+                    : "bg-slate-600 text-slate-200 border-slate-500")
+                }
+              >
                 SignIn/SignOut
               </th>
 
@@ -248,13 +258,13 @@ export default function Employee({ employee }) {
                 <tr key={item._id}>
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     <i className="fas fa-calendar text-orange-500 mr-2"></i>
-                    {moment(`${item.date} ${item.signIn}`).format(
-                      "MMMM Do YYYY hh:mm a"
-                    )}{" "}
-                    / <br></br>
-                    {moment(`${item.date} ${item.signOut}`).format(
-                      "MMMM Do YYYY hh:mm a"
-                    )}
+                    {moment(`${item.date}`).format("MMMM Do YYYY")}
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {/* <i className="fas fa-calendar text-orange-500 mr-2"></i> */}
+                    <i class="fas fa-clock text-orange-500 mr-2"></i>
+                    {moment(`${item.signIn}`).format("hh:mm A")} / <br></br>
+                    {moment(`${item.signOut}`).format("hh:mm A")}
                   </td>
 
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
