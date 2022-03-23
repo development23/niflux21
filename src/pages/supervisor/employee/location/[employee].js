@@ -14,8 +14,8 @@ import { Loader } from "@googlemaps/js-api-loader";
 
 export async function getServerSideProps({ query }) {
   const { employee, page } = query;
-  // const startOfMonth = moment().subtract(2, "year").toDate();
-  // const endOfMonth = moment().toDate();
+  const startOfMonth = moment().startOf("month").toDate();
+  const endOfMonth = moment().endOf("month").toDate();
   await dbConnect();
 
   const employeeData = await EmployeeModel.aggregate([
@@ -29,14 +29,14 @@ export async function getServerSideProps({ query }) {
     { $unwind: "$locations" },
     { $sort: { "locations.createdAt": -1 } },
 
-    // {
-    //   $match: {
-    //     $and: [
-    //       { "locations.createdAt": { $gte: startOfMonth } },
-    //       { "locations.createdAt": { $lte: endOfMonth } },
-    //     ],
-    //   },
-    // },
+    {
+      $match: {
+        $and: [
+          { "locations.createdAt": { $gte: startOfMonth } },
+          { "locations.createdAt": { $lte: endOfMonth } },
+        ],
+      },
+    },
 
     {
       $project: {

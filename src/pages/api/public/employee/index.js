@@ -1,5 +1,5 @@
 import createHandler from "@/middleware";
-import Property from "models/Property";
+
 import Employee from "models/Employee";
 
 const handler = createHandler();

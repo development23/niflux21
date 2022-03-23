@@ -1,5 +1,5 @@
 import createHandler from "@/middleware";
-import Property from "models/Property";
+
 import Supervisor from "models/Supervisor";
 
 const handler = createHandler();

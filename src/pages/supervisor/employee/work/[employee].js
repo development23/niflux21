@@ -23,6 +23,11 @@ import { Loader } from "@googlemaps/js-api-loader";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
+import dynamic from "next/dynamic";
+const GeneratePDF = dynamic(() => import("@/components/GeneratePDF"), {
+  ssr: false,
+});
+
 export async function getServerSideProps({ query }) {
   const { employee, page } = query;
 
@@ -56,6 +61,8 @@ export default function Employee({ employeeData }) {
   const [showRemark, setShowRemark] = useState(false);
   const [remarkDataIndex, setRemarkIndex] = useState(null);
   const [addRemark, setAddRemark] = useState(false);
+
+  const ref = useRef();
 
   useEffect(() => {
     console.log("here");
@@ -163,6 +170,31 @@ export default function Employee({ employeeData }) {
   return (
     <>
       <div className="px-2 py-3 bg-slate-600 rounded pl-4 text-white shadow mb-5 backdrop-blur-[5px] space-y-1">
+        {/* <div className="main">
+          <div className="content" ref={ref}>
+            <h1>Hello PDF</h1>
+
+            <p id="text">
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam
+              animi, molestiae quaerat assumenda neque culpa ab aliquam facilis
+              eos nesciunt! Voluptatibus eligendi vero amet dolorem omnis
+              provident beatae nihil earum! Lorem, ipsum dolor sit amet
+              consectetur adipisicing elit. Ea, est. Magni animi fugit
+              voluptates mollitia officia libero in. Voluptatibus nisi assumenda
+              accusamus deserunt sunt quidem in, ab perspiciatis ad rem. Lorem
+              ipsum dolor sit amet consectetur adipisicing elit. Nihil
+              accusantium reprehenderit, quasi dolorum deserunt, nisi dolores
+              quae officiis odio vel natus! Pariatur enim culpa velit
+              consequatur sapiente natus dicta alias! Lorem ipsum dolor sit amet
+              consectetur adipisicing elit. Consequatur, asperiores error
+              laudantium corporis sunt earum incidunt expedita quo quidem
+              delectus fugiat facilis quia impedit sit magni quibusdam ipsam
+              reiciendis quaerat!
+            </p>
+          </div>
+          <GeneratePDF html={ref} />
+        </div> */}
+
         <div className="justify-between flex">
           <ul className="flex justify-start mt-1">
             <li className="pr-2 text-[16px] text-[#ffffff]">
@@ -296,7 +328,7 @@ export default function Employee({ employeeData }) {
               .reverse()
               .map((item, index) => (
                 <>
-                  <tr key={item._id}>
+                  <tr key={index}>
                     <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                       <button onClick={() => handlePreview(employee, item)}>
                         <a>

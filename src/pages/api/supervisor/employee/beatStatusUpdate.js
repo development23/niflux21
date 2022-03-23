@@ -4,7 +4,7 @@ import Employee from "models/Employee";
 const handler = createHandler();
 
 handler.put((req, result) => {
-  console.log(req.body);
+  // console.log(req.body);
   Employee.updateOne(
     {
       _id: req.body.id,
