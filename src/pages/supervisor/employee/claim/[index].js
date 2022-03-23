@@ -156,14 +156,18 @@ export default function Claim({ employeeData, eid }) {
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
             </li>
             <li className="pr-2 text-[16px]  text-[#ffffff]">
-              <Link href="/supervisor/employee"> Work Management </Link>
+              <Link href={`/supervisor/employee/${employee[0]._id}`}>
+                Work Management
+              </Link>
             </li>
             <li className="pr-2">
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
             </li>
 
             <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
-              <a href="/supervisor/all-employee"> {employee.name} Claim </a>
+              <a href={`/supervisor/employee/${employee[0]._id}`}>
+                {employee[0].name} Claim
+              </a>
             </li>
           </ul>
         </div>
