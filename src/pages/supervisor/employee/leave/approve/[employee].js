@@ -54,7 +54,15 @@ export default function Employee({ employee }) {
             </li>
 
             <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
-              <a href="#"> {employee.name} Leave </a>
+              <a href={"/supervisor/employee/leave/" + employee._id}>
+                {employee.name} Leave
+              </a>
+            </li>
+            <li className="pr-2">
+              <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
+            </li>
+            <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
+              <a href="#">Approved</a>
             </li>
           </ul>
         </div>

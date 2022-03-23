@@ -19,11 +19,12 @@ export async function getServerSideProps({ query }) {
   return {
     props: {
       employee: Jsonify(employeeData),
+      eid: employee,
     },
   };
 }
 
-export default function Employee({ employee }) {
+export default function Employee({ employee, eid }) {
   const color = "dark";
   const router = useRouter();
 
@@ -54,7 +55,15 @@ export default function Employee({ employee }) {
             </li>
 
             <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
-              <a href="#"> {employee.name} Leave </a>
+              <a href={"/supervisor/employee/leave/" + eid}>
+                {employee.name} Leave{" "}
+              </a>
+            </li>
+            <li className="pr-2">
+              <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
+            </li>
+            <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
+              <a href="#">Reject</a>
             </li>
           </ul>
         </div>

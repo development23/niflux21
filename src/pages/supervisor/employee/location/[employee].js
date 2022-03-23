@@ -8,33 +8,68 @@ import EmployeeModel from "models/Employee";
 import { useRef, useEffect, useState } from "react";
 import { rgbDataURL } from "util/ColorDataUrl";
 import { IconButton } from "@mui/material";
+import Mongoose from "mongoose";
 import axios from "axios";
 import { Loader } from "@googlemaps/js-api-loader";
 
 export async function getServerSideProps({ query }) {
   const { employee, page } = query;
-
+  // const startOfMonth = moment().subtract(2, "year").toDate();
+  // const endOfMonth = moment().toDate();
   await dbConnect();
-  const employeeData = await EmployeeModel.findOne({ _id: employee });
 
+  const employeeData = await EmployeeModel.aggregate([
+    {
+      $match: {
+        _id: Mongoose.Types.ObjectId(employee),
+        // beatType: "Local",
+      },
+    },
+
+    { $unwind: "$locations" },
+    { $sort: { "locations.createdAt": -1 } },
+
+    // {
+    //   $match: {
+    //     $and: [
+    //       { "locations.createdAt": { $gte: startOfMonth } },
+    //       { "locations.createdAt": { $lte: endOfMonth } },
+    //     ],
+    //   },
+    // },
+
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        locations: 1,
+      },
+    },
+  ]);
+  // console.log(employeeData[0]);
   return {
     props: {
-      employee: Jsonify(employeeData),
+      employeeData: Jsonify(employeeData),
+      id: employee,
     },
   };
 }
 
-export default function Employee({ employee }) {
+export default function Employee({ employeeData, id }) {
   const color = "dark";
   const router = useRouter();
   const [preview, setPreview] = useState(null);
   const [sEid, setSEid] = useState(null);
+  const [eid, setEid] = useState(id);
   const previewRef = useRef(null);
   const [data, setData] = useState(null);
-  // const [employeeCopy, setEmployeeCopy] = useState(employee);
-  // const [selectedDate, setSelectedDate] = useState(
-  //   moment().format("YYYY-MM-DD")
-  // );
+  const [employee, setEmployee] = useState(employeeData);
+  // useEffect(() => {
+  //   console.log(employee[0].name);
+  // }, []);
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format("YYYY-MM-DD")
+  );
   let googlemap = useRef(null);
 
   useOutsideAlerter(previewRef);
@@ -103,15 +138,19 @@ export default function Employee({ employee }) {
     }
   };
 
-  // const handleFilter = (e) => {
-  //   console.log(selectedDate);
-  //   console.log(employeeCopy.locations[0].createdAt);
-  //   console.log(
-  //     employeeCopy.locations.includes((e) => {
-  //       return moment(e.createdAt).format("YYYY-MM-DD") == selectedDate;
-  //     })
-  //   );
-  // };
+  const handleDateFilter = (date) => {
+    // console.log(moment().format());
+    axios
+      .post(`/api/supervisor/employee/location/filter`, {
+        eid: eid,
+        date: date,
+      })
+      .then(({ data }) => {
+        setEmployee(data.employee);
+        // console.log(data.employee);
+      })
+      .catch((e) => console.log(e));
+  };
   return (
     <>
       <div className="px-2 py-3 bg-slate-600 rounded pl-4 text-white shadow mb-5 backdrop-blur-[5px] space-y-1">
@@ -131,15 +170,15 @@ export default function Employee({ employee }) {
             </li>
 
             <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
-              <a href="#"> {employee.name} Location </a>
+              <a href="#"> {employee[0]?.name} Location </a>
             </li>
           </ul>
         </div>
       </div>
-      {/* <div className="mb-5">
+      <div className="mb-5">
         <button
           onClick={() => {
-            employeeData = employeeDataCopy;
+            setEmployee(employeeData);
           }}
         >
           <a className="bg-[#193f6b] ml-3 mb-5  px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
@@ -154,11 +193,12 @@ export default function Employee({ employee }) {
             className="bg-gray-200 p-1 border-2 border-[#193f6b] mt-5"
             value={selectedDate}
             onChange={(e) => {
-              handleFilter(e.target.value), setSelectedDate(e.target.value);
+              handleDateFilter(e.target.value), setSelectedDate(e.target.value);
             }}
+            max={moment().format("YYYY-MM-DD")}
           />
         </span>
-      </div> */}
+      </div>
       <div className="block w-full overflow-x-auto">
         {/* Projects table */}
         <table className="items-center w-full bg-transparent border-collapse">
@@ -188,15 +228,19 @@ export default function Employee({ employee }) {
             </tr>
           </thead>
           <tbody>
-            {employee.locations
+            {employee
               .slice(0)
               .reverse()
               .map((item, index) => (
-                <tr key={item._id}>
+                <tr key={item.locations._id}>
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     <button
                       onClick={() =>
-                        handlePreview(employee, item.longitude, item.latitude)
+                        handlePreview(
+                          employee,
+                          item.locations.longitude,
+                          item.locations.latitude
+                        )
                       }
                     >
                       <a className="bg-[#ee571b] px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
@@ -207,10 +251,22 @@ export default function Employee({ employee }) {
 
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
                     <i className="fas fa-calendar text-orange-500 mr-2"></i>
-                    {moment(item.createdAt).format("Do, MMM YY hh:mm a")}
+                    {moment(item.locations.createdAt).format(
+                      "Do, MMM YY hh:mm a"
+                    )}
                   </td>
                 </tr>
               ))}
+            {employee.length === 0 && (
+              <tr>
+                <td
+                  colSpan="2"
+                  className="w-full p-3 bg-slate-500 flex-row  text-center"
+                >
+                  <a className="text-white">No Record Found</a>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
 

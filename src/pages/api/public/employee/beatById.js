@@ -50,6 +50,15 @@ handler.get(async (req, res) => {
     },
 
     {
+      $lookup: {
+        from: "employees",
+        localField: "beats.jointEmployee",
+        foreignField: "_id",
+        as: "beats.jointEmployee",
+      },
+    },
+
+    {
       $project: {
         beats: 1,
         _id: 1,
@@ -62,6 +71,28 @@ handler.get(async (req, res) => {
         localField: "disObj",
         foreignField: "_id",
         as: "beats.distributer",
+      },
+    },
+    {
+      $project: {
+        beats: 1,
+        _id: 1,
+        beats: {
+          jointEmployee: { name: 1 },
+          distributer: 1,
+          beat: 1,
+          beatType: 1,
+          activity: 1,
+          distance: 1,
+          sitePhoto: 1,
+          siteStatus: 1,
+          travelTime: 1,
+          status: 1,
+          others: 1,
+          remarks: 1,
+          _id: 1,
+        },
+        // disObj: { $toObjectId: "$beats.distributer" },
       },
     },
   ])
