@@ -1,0 +1,139 @@
+<div>
+      {employees.map((employee, index) => (
+        <div key={index}>
+          <div className="bg-gray-300 p-4 capitalize">
+            <h1 className="text-xl font-bold tracking-widest">
+              Leaves Of {employee.name}
+            </h1>
+          </div>
+          <table className="items-center w-full bg-transparent border-collapse">
+            <thead>
+              <tr>
+                <th
+                  className={
+                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    (color === "light"
+                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                      : "bg-slate-600 text-slate-200 border-slate-500")
+                  }
+                >
+                  From
+                </th>
+                <th
+                  className={
+                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    (color === "light"
+                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                      : "bg-slate-600 text-slate-200 border-slate-500")
+                  }
+                >
+                  To
+                </th>
+                <th
+                  className={
+                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    (color === "light"
+                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                      : "bg-slate-600 text-slate-200 border-slate-500")
+                  }
+                >
+                  Reason
+                </th>
+                <th
+                  className={
+                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    (color === "light"
+                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                      : "bg-slate-600 text-slate-200 border-slate-500")
+                  }
+                >
+                  Status
+                </th>
+                <th
+                  className={
+                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    (color === "light"
+                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                      : "bg-slate-600 text-slate-200 border-slate-500")
+                  }
+                >
+                  Remarks
+                </th>
+                <th
+                  className={
+                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    (color === "light"
+                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                      : "bg-slate-600 text-slate-200 border-slate-500")
+                  }
+                >
+                  Creation Date
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {employee.leaves.map((item, index) => (
+                <tr key={index}>
+                  <th className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left capitalize">
+                    <span
+                      className={
+                        "ml-3 font-bold capitalize" +
+                        +(color === "light" ? "text-slate-600" : "text-white")
+                      }
+                    >
+                      {item.from}
+                    </span>
+                  </th>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <i className="fas fa-phone-alt text-orange-500 mr-2"></i>
+                    {item.to}
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <i className="fas fa-envelope text-orange-500 mr-2"></i>
+                    {item.reason}
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 capitalize">
+                    {item.status}
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <div className="flex items-center">
+                      <i
+                        className={`fas fa-circle ${
+                          item.status ? "text-green-500" : "text-red-500"
+                        } mr-2`}
+                      ></i>
+                      {item.status}
+                    </div>
+                  </td>
+
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                    {moment(item.createdAt).format("Do, MMM YY hh:mm a")}
+                  </td>
+
+                  {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left space-x-3">
+                      <Link
+                        href={{
+                          pathname: "/admin/employee/[employee]",
+                          query: { employee: employee._id },
+                        }}
+                      >
+                        <a className="bg-[#ee571b] px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+                          View
+                        </a>
+                      </Link>
+
+                      {!employee.supervisor && (
+                        <button onClick={() => handlePreview(employee)}>
+                          <a className="bg-[#ee571b] px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+                            Assign Supervisor
+                          </a>
+                        </button>
+                      )}
+                    </td> */}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+    </div>
