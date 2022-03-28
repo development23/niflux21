@@ -7,7 +7,14 @@ import dbConnect, { Jsonify } from "middleware/database";
 import EmployeeModel from "models/Employee";
 import { useRef, useState } from "react";
 import { rgbDataURL } from "util/ColorDataUrl";
-import { IconButton } from "@mui/material";
+import {
+  CircularProgress,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import axios from "axios";
 import { Loader } from "@googlemaps/js-api-loader";
 
@@ -16,7 +23,13 @@ export async function getServerSideProps({ query }) {
   const startOfMonth = moment().startOf("month").toDate();
   const endOfMonth = moment().endOf("month").toDate();
   await dbConnect();
-  const employeeData = await EmployeeModel.aggregate([
+  const employeeData = await EmployeeModel.findOne(
+    { _id: index },
+    {
+      name: 1,
+    }
+  );
+  const claimsData = await EmployeeModel.aggregate([
     {
       $match: {
         _id: Mongoose.Types.ObjectId(index),
@@ -24,51 +37,51 @@ export async function getServerSideProps({ query }) {
       },
     },
 
-    { $unwind: "$beats" },
-    { $sort: { "beats.createdAt": -1 } },
+    { $unwind: "$claims" },
+    { $sort: { "claims.createdAt": -1 } },
 
     {
       $match: {
         $and: [
-          { "beats.createdAt": { $gte: startOfMonth } },
-          { "beats.createdAt": { $lte: endOfMonth } },
+          { "claims.createdAt": { $gte: startOfMonth } },
+          { "claims.createdAt": { $lte: endOfMonth } },
         ],
       },
     },
 
     {
       $project: {
-        beats: 1,
         _id: 1,
         name: 1,
-        disObj: { $toObjectId: "$beats.distributer" },
+        claims: 1,
       },
     },
-    {
-      $lookup: {
-        from: "distributers",
-        localField: "disObj",
-        foreignField: "_id",
-        as: "beats.distributer",
-      },
-    },
+    // {
+    //   $lookup: {
+    //     from: "distributers",
+    //     localField: "disObj",
+    //     foreignField: "_id",
+    //     as: "beats.distributer",
+    //   },
+    // },
   ]);
 
   //   console.log(employeeData);
 
   return {
     props: {
-      employeeData: Jsonify(employeeData),
+      claimsData: Jsonify(claimsData),
       eid: index,
+      employee: Jsonify(employeeData),
     },
   };
 }
 
-export default function Claim({ employeeData, eid }) {
+export default function Claim({ claimsData, eid, employee }) {
   const color = "dark";
   const router = useRouter();
   const [preview, setPreview] = useState(null);
-  const [employee, setEmployee] = useState(employeeData);
+  const [claims, setClaims] = useState(claimsData);
   const [sEid, setSEid] = useState(null);
   const previewRef = useRef(null);
   const [pimg, setImg] = useState(null);
@@ -76,17 +89,33 @@ export default function Claim({ employeeData, eid }) {
   const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM"));
   let [googlemap, setgooglemap] = useState(null);
   let googlemap1 = useRef(null);
+  const [loadingIndex, setLoadingIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showRemark, setShowRemark] = useState(false);
+  const [remarkDataIndex, setRemarkIndex] = useState(null);
+  const [beats, setBeats] = useState([]);
+  useOutsideAlerter(previewRef);
+  function useOutsideAlerter(ref) {
+    if (!preview) return;
+
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setPreview(null);
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }
   const handlePreview = (item) => {
     // console.log(lat);
     //let signInInfo = data;
-    console.log(item?.beats.travelTime.startCoordinates.latitude);
-    handleMap(
-      item?.beats.travelTime.startCoordinates.longitude,
-      item?.beats.travelTime.startCoordinates.latitude
-    );
-    setImg(item.beats);
+    // console.log(item?.beats.travelTime.startCoordinates.latitude);
     setPreview(item);
-    setSEid(item._id);
   };
 
   const handleMap = (long, lat) => {
@@ -140,10 +169,44 @@ export default function Claim({ employeeData, eid }) {
         eid: eid,
         month: month,
       })
-      .then(({ data }) => setEmployee(data.employee))
+      .then(({ data }) => setClaims(data.employee))
       .catch((e) => console.log(e));
   };
+  const handleStatusChange = (item, e) => {
+    const r = confirm("Are you sure you want to change the status?");
 
+    if (!r) return false;
+
+    const formData = {
+      id: eid,
+      claimId: item.claims._id,
+      status: e.target.value,
+    };
+    // console.log(formData);
+    axios
+      .put(`/api/supervisor/employee/claim/claimStatusUpdate`, formData)
+      .then(({ data }) => {
+        handleThisMonthClaimFilter("thisYear");
+      })
+      .catch((e) => console.log(e));
+  };
+  const handleGetExpensesImages = (date, index) => {
+    setRemarkIndex(index);
+    setLoadingIndex(index);
+    setIsLoading(true);
+    axios
+      .post(`/api/supervisor/employee/claim/getClaimExpenses`, {
+        eid: eid,
+        date: date,
+      })
+      .then(({ data }) => {
+        setIsLoading(false);
+        setBeats(data.employee);
+        setShowRemark(!showRemark);
+        console.log(data.employee);
+      })
+      .catch((e) => console.log(e));
+  };
   return (
     <>
       <div className="px-2 py-3 bg-slate-600 rounded pl-4 text-white shadow mb-5 backdrop-blur-[5px] space-y-1">
@@ -156,7 +219,7 @@ export default function Claim({ employeeData, eid }) {
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
             </li>
             <li className="pr-2 text-[16px]  text-[#ffffff]">
-              <Link href={`/supervisor/employee/${employee[0]._id}`}>
+              <Link href={`/supervisor/employee/${employee?._id}`}>
                 Work Management
               </Link>
             </li>
@@ -165,9 +228,15 @@ export default function Claim({ employeeData, eid }) {
             </li>
 
             <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
-              <a href={`/supervisor/employee/${employee[0]._id}`}>
-                {employee[0].name} Claim
+              <a href={`/supervisor/employee/${employee?._id}`}>
+                {employee.name}
               </a>
+            </li>
+            <li className="pr-2">
+              <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
+            </li>
+            <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
+              <a>Claims</a>
             </li>
           </ul>
         </div>
@@ -176,29 +245,31 @@ export default function Claim({ employeeData, eid }) {
       <div className="mb-5">
         <button
           onClick={() => {
-            handleThisMonthClaimFilter("thisMonth"),
-              setSelectedDate(moment().format("YYYY-MM"));
+            handleThisMonthClaimFilter("thisYear"),
+              setSelectedDate(moment().startOf("year").format("YYYY-MM"));
           }}
         >
           <a className="bg-[#193f6b] ml-3 mb-5  px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
-            This Month
+            This Year
           </a>
         </button>
         <button
           onClick={() => {
-            handleThisMonthClaimFilter("lastMonth"),
-              setSelectedDate(moment().subtract(1, "M").format("YYYY-MM"));
+            handleThisMonthClaimFilter("lastYear"),
+              setSelectedDate(
+                moment().subtract(1, "Y").startOf("year").format("YYYY-MM")
+              );
           }}
         >
           <a className="bg-[#193f6b] ml-3 mb-5  px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
-            Last Month
+            Last Year
           </a>
         </button>
 
         <span className="ml-5 mb-5 mt-5 ">
           <input
             type="month"
-            name="select month"
+            name="select Year"
             className="bg-gray-200 p-1 border-2 border-[#193f6b] mt-5"
             value={selectedDate}
             onChange={(e) => {
@@ -209,7 +280,7 @@ export default function Claim({ employeeData, eid }) {
         </span>
 
         <div className="mt-5 px-4">
-          <p className="text-2xl space-x-2">
+          {/* <p className="text-2xl space-x-2">
             <span className="font-semibold">Total Distance Travelled:</span>
             <span>
               {employee.reduce(
@@ -217,10 +288,10 @@ export default function Claim({ employeeData, eid }) {
                 0
               )}
             </span>
-          </p>
+          </p> */}
           <p className="text-2xl space-x-2">
-            <span className="font-semibold">Total Beats:</span>
-            <span>{employee.length}</span>
+            <span className="font-semibold">Total Claims:</span>
+            <span>{claims.length}</span>
           </p>
         </div>
       </div>
@@ -238,7 +309,7 @@ export default function Claim({ employeeData, eid }) {
                     : "bg-slate-600 text-slate-200 border-slate-500")
                 }
               >
-                Beat
+                Date
               </th>
               <th
                 className={
@@ -248,18 +319,7 @@ export default function Claim({ employeeData, eid }) {
                     : "bg-slate-600 text-slate-200 border-slate-500")
                 }
               >
-                Distance
-              </th>
-
-              <th
-                className={
-                  "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
-                  (color === "light"
-                    ? "bg-slate-50 text-slate-500 border-slate-100"
-                    : "bg-slate-600 text-slate-200 border-slate-500")
-                }
-              >
-                Site Photo
+                Created At
               </th>
 
               <th
@@ -270,7 +330,7 @@ export default function Claim({ employeeData, eid }) {
                     : "bg-slate-600 text-slate-200 border-slate-500")
                 }
               >
-                Site Status
+                Updated At
               </th>
 
               <th
@@ -281,9 +341,8 @@ export default function Claim({ employeeData, eid }) {
                     : "bg-slate-600 text-slate-200 border-slate-500")
                 }
               >
-                Beat Status
+                Status
               </th>
-
               <th
                 className={
                   "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
@@ -292,9 +351,8 @@ export default function Claim({ employeeData, eid }) {
                     : "bg-slate-600 text-slate-200 border-slate-500")
                 }
               >
-                Order Status
+                Change Status
               </th>
-
               <th
                 className={
                   "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
@@ -303,91 +361,217 @@ export default function Claim({ employeeData, eid }) {
                     : "bg-slate-600 text-slate-200 border-slate-500")
                 }
               >
-                Travel Time
-              </th>
-
-              <th
-                className={
-                  "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
-                  (color === "light"
-                    ? "bg-slate-50 text-slate-500 border-slate-100"
-                    : "bg-slate-600 text-slate-200 border-slate-500")
-                }
-              >
-                createdAt
+                Expenses Beats
               </th>
             </tr>
           </thead>
           <tbody>
-            {employee.map((item, index) => (
-              <tr key={item.beats._id}>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <button onClick={() => handlePreview(item)}>
+            {claims.map((item, index) => (
+              <>
+                <tr key={item.claims._id}>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     <a>
-                      <i className="fas fa-user text-orange-500 mr-2"></i>
-                      {item.beats.beat}
+                      <i className="fas fa-calendar text-orange-500 mr-2"></i>
+                      {moment(item.claims.claimDate).format("DD,MMM YYYY")}
                     </a>
-                  </button>
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-map text-orange-500 mr-2"></i>
-                  {item.beats.distance}
-                </td>
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <i className="fas fa-clock text-orange-500 mr-2"></i>
+                    {moment(item.claims.createdAt).format("hh:mm A")}
+                  </td>
 
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  {!item.beats.sitePhoto ? (
-                    "Not Available"
-                  ) : (
-                    <Image
-                      src={item.beats.sitePhoto}
-                      className="img-fluid border clickable-image"
-                      alt="..."
-                      width={10}
-                      height={10}
-                      quality={60}
-                      placeholder={rgbDataURL(2, 129, 210)}
-                      layout="responsive"
-                      onClick={() => handlePreview(item)}
-                    />
-                  )}
-                </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                    <i className="fas fa-clock text-orange-500 mr-2"></i>
+                    {moment(item.claims.updatedAt).format("hh:mm A")}
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                    {item.claims.status}
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                    <FormControl sx={{ minWidth: 80, marginTop: 1 }}>
+                      <InputLabel id="demo-simple-select-label">
+                        Status
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={item.claims.status}
+                        label="status"
+                        onChange={(e) => {
+                          handleStatusChange(item, e);
+                        }}
+                      >
+                        <MenuItem value={"Pending"}>Pending</MenuItem>
 
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  {item.beats.siteStatus}
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  {item.beats.status}
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  {item.beats.orderStatus.status}
-                </td>
+                        <MenuItem value={"Paid"}>Paid</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                    <button
+                      className="bg-red-500 p-2 ml-1 rounded-sm text-white"
+                      // onClick={() => {
+                      //   setShowRemark(!showRemark), setRemarkIndex(index);
+                      // }}
+                      onClick={() => {
+                        showRemark
+                          ? (setBeats([]), setShowRemark(false))
+                          : handleGetExpensesImages(
+                              item.claims.claimDate,
+                              index
+                            );
+                      }}
+                    >
+                      {isLoading && loadingIndex === index ? (
+                        <CircularProgress color="inherit" />
+                      ) : showRemark && remarkDataIndex == index ? (
+                        "Close"
+                      ) : (
+                        "View"
+                      )}
+                    </button>
+                  </td>
+                </tr>
+                {showRemark && index == remarkDataIndex && (
+                  <>
+                    <tr>
+                      <td colSpan={6}>
+                        <div className="p-1 bg-slate-500 w-full">
+                          <table className="items-center w-full bg-transparent border-collapse">
+                            <thead>
+                              <tr>
+                                <th
+                                  className={
+                                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                                    (color === "light"
+                                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                                      : "bg-slate-600 text-slate-200 border-slate-500")
+                                  }
+                                >
+                                  Date
+                                </th>
+                                <th
+                                  className={
+                                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                                    (color === "light"
+                                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                                      : "bg-slate-600 text-slate-200 border-slate-500")
+                                  }
+                                >
+                                  Travel Time
+                                </th>
 
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  <p>
-                    {" "}
-                    <b>Start Time - </b>{" "}
-                    {moment(item.beats.travelTime.startTime).format(
-                      "Do, MMM YY hh:mm a"
-                    )}{" "}
-                    <br></br>
-                    <b>End Time - </b>{" "}
-                    {moment(item.beats.travelTime.endTime).format(
-                      "Do, MMM YY hh:mm a"
-                    )}{" "}
-                    <br></br>
-                    <b>Start Coordinate - </b>{" "}
-                    {item.beats.travelTime.startCoordinates.longitude} /{" "}
-                    {item.beats.travelTime.startCoordinates.latitude} <br></br>
-                    <b> End Coordinate - </b>{" "}
-                    {item.beats.travelTime.endCoordinates.longitude} /{" "}
-                    {item.beats.travelTime.endCoordinates.latitude}
-                  </p>
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                  {moment(item.beats.createdAt).format("Do, MMM YY hh:mm a")}
+                                <th
+                                  className={
+                                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                                    (color === "light"
+                                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                                      : "bg-slate-600 text-slate-200 border-slate-500")
+                                  }
+                                >
+                                  Distance
+                                </th>
+
+                                <th
+                                  className={
+                                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                                    (color === "light"
+                                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                                      : "bg-slate-600 text-slate-200 border-slate-500")
+                                  }
+                                >
+                                  Status
+                                </th>
+                                <th
+                                  className={
+                                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                                    (color === "light"
+                                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                                      : "bg-slate-600 text-slate-200 border-slate-500")
+                                  }
+                                >
+                                  Distributor
+                                </th>
+                                <th
+                                  className={
+                                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                                    (color === "light"
+                                      ? "bg-slate-50 text-slate-500 border-slate-100"
+                                      : "bg-slate-600 text-slate-200 border-slate-500")
+                                  }
+                                >
+                                  Expenses Images
+                                </th>
+                              </tr>
+                            </thead>
+                            {beats
+                              .slice(0)
+                              .reverse()
+                              .map((ite, index) => (
+                                <tbody>
+                                  <tr>
+                                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-white text-xs whitespace-nowrap p-4">
+                                      <i className="fas fa-calendar text-orange-500 mr-2"></i>
+                                      {moment(ite.beats.createdAt).format(
+                                        "Do, MMM YYYY"
+                                      )}
+                                    </td>
+                                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-white text-xs whitespace-nowrap p-4">
+                                      <i className="fas fa-clock text-orange-500 mr-2"></i>
+                                      <b>Start Time - </b>{" "}
+                                      {moment(
+                                        ite.beats.travelTime.startTime
+                                      ).format("Do, MMM YYYY hh:mm A")}{" "}
+                                      <br></br>
+                                      <b>End Time - </b>{" "}
+                                      {moment(
+                                        ite.beats.travelTime.endTime
+                                      ).format("Do, MMM YYYY hh:mm A")}{" "}
+                                    </td>
+                                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-white text-xs whitespace-nowrap p-4">
+                                      <i className="fas fa-map text-orange-500 mr-2"></i>
+                                      {ite.beats.distance + "KM"}
+                                    </td>
+                                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-white text-xs whitespace-nowrap p-4">
+                                      <i className="fas fa-map text-orange-500 mr-2"></i>
+                                      {ite.beats.orderStatus.status}
+                                    </td>
+                                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-white text-xs whitespace-nowrap p-4">
+                                      <i className="fas fa-user text-orange-500 mr-2"></i>
+                                      {ite.beats.distributer[0].name}
+                                    </td>
+                                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                                      <button
+                                        className="bg-red-500 p-2 ml-1 rounded-sm text-white"
+                                        // onClick={() => {
+                                        //   setShowRemark(!showRemark), setRemarkIndex(index);
+                                        // }}
+                                        onClick={() => {
+                                          handlePreview(ite.beats);
+                                          console.log(ite);
+                                        }}
+                                      >
+                                        View Images
+                                      </button>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              ))}
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                  </>
+                )}
+              </>
+            ))}
+            {claims.length === 0 && (
+              <tr>
+                <td colSpan={6} className="bg-slate-500 p-2">
+                  <p className="text-center text-white">No Records Found</p>
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
 
@@ -423,31 +607,31 @@ export default function Claim({ employeeData, eid }) {
 
             <div className="tracking-wider text-slate-700">
               <p className="capitalize">
-                <i className="fa fa-user"></i> {preview?.name}
+                <i className="fa fa-user"></i> {preview?.beat}
               </p>
 
               {/* {console.log()} */}
 
               <div className="mt-5">
-                <p> Beat - {pimg?.beat}</p>
-                <p> Distance - {pimg?.distance}</p>
-                <p> Site Status - {pimg?.siteStatus}</p>
-                <p> Beat Status - {pimg?.status}</p>
+                <p> Beat - {preview?.beat}</p>
+                <p> Distance - {preview?.distance}</p>
+
+                <p> Beat Status - {preview?.status}</p>
                 <p>
                   {" "}
-                  Order Status - {pimg?.orderStatus.status}{" "}
+                  Order Status - {preview?.orderStatus.status}{" "}
                   {/* {pimg?.travelTime.startCoordinates.longitude} */}
                 </p>
                 <p></p>
                 <p>
-                  {moment(pimg?.createdAt).format("DD MMM, YYYY hh:mm:ss A")}
+                  {moment(preview?.createdAt).format("DD MMM, YYYY hh:mm:ss A")}
                 </p>
                 <div className="m-4 flex">
                   <button
                     onClick={() =>
                       handleMap(
-                        pimg?.travelTime.startCoordinates.longitude,
-                        pimg?.travelTime.startCoordinates.latitude
+                        preview?.travelTime.startCoordinates.longitude,
+                        preview?.travelTime.startCoordinates.latitude
                       )
                     }
                   >
@@ -459,8 +643,8 @@ export default function Claim({ employeeData, eid }) {
                   <button
                     onClick={() =>
                       handleMap(
-                        pimg?.travelTime.endCoordinates.longitude,
-                        pimg?.travelTime.endCoordinates.latitude
+                        preview?.travelTime.endCoordinates.longitude,
+                        preview?.travelTime.endCoordinates.latitude
                       )
                     }
                   >
@@ -492,22 +676,26 @@ export default function Claim({ employeeData, eid }) {
                   </div>
                 )}
               </div>
-
+              <b>Expenses Images :-</b>
               <div className="m-3">
-                {!pimg?.sitePhoto ? (
-                  ""
-                ) : (
-                  <Image
-                    src={pimg?.sitePhoto}
-                    className="img-fluid border clickable-image"
-                    alt="..."
-                    width={100}
-                    height={100}
-                    quality={60}
-                    placeholder={rgbDataURL(2, 129, 210)}
-                    layout="responsive"
-                  />
-                )}
+                {!preview?.expenses
+                  ? ""
+                  : preview?.expenses.map((item) => (
+                      <div className="mt-2">
+                        <a href={item} target="_blank">
+                          <Image
+                            src={item}
+                            className="img-fluid border clickable-image"
+                            alt="..."
+                            width={100}
+                            height={100}
+                            quality={60}
+                            placeholder={rgbDataURL(2, 129, 210)}
+                            layout="responsive"
+                          />
+                        </a>
+                      </div>
+                    ))}
               </div>
             </div>
           </div>

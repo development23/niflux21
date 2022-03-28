@@ -6,18 +6,18 @@ import moment from "moment";
 const handler = createHandler();
 
 handler.post((req, res) => {
-  //   console.log(req.body);
+  // console.log(req.body);
   let startOfMonth;
   let endOfMonth;
-  if (req.body.month === "thisMonth") {
-    startOfMonth = moment().startOf("month").toDate();
-    endOfMonth = moment().endOf("month").toDate();
-  } else if (req.body.month === "lastMonth") {
-    startOfMonth = moment().subtract(1, "M").startOf("month").toDate();
-    endOfMonth = moment().subtract(1, "M").endOf("month").toDate();
-  } else if (req.body.month != "thisMonth" && req.body.month != "lastMonth") {
-    startOfMonth = moment(req.body.month, "YYYY-MM").startOf("month").toDate();
-    endOfMonth = moment(req.body.month, "YYYY-MM").endOf("month").toDate();
+  if (req.body.month === "thisYear") {
+    startOfMonth = moment().startOf("year").toDate();
+    endOfMonth = moment().endOf("year").toDate();
+  } else if (req.body.month === "lastYear") {
+    startOfMonth = moment().subtract(1, "Y").startOf("year").toDate();
+    endOfMonth = moment().subtract(1, "Y").endOf("year").toDate();
+  } else if (req.body.month != "thisYear" && req.body.month != "lastYear") {
+    startOfMonth = moment(req.body.month, "YYYY-MM").startOf("year").toDate();
+    endOfMonth = moment(req.body.month, "YYYY-MM").endOf("year").toDate();
   }
 
   //   console.log(endOfMonth);
@@ -30,32 +30,23 @@ handler.post((req, res) => {
       },
     },
 
-    { $unwind: "$beats" },
-    { $sort: { "beats.createdAt": -1 } },
+    { $unwind: "$claims" },
+    { $sort: { "claims.createdAt": -1 } },
 
     {
       $match: {
         $and: [
-          { "beats.createdAt": { $gte: startOfMonth } },
-          { "beats.createdAt": { $lte: endOfMonth } },
+          { "claims.createdAt": { $gte: startOfMonth } },
+          { "claims.createdAt": { $lte: endOfMonth } },
         ],
       },
     },
 
     {
       $project: {
-        beats: 1,
         _id: 1,
         name: 1,
-        disObj: { $toObjectId: "$beats.distributer" },
-      },
-    },
-    {
-      $lookup: {
-        from: "distributers",
-        localField: "disObj",
-        foreignField: "_id",
-        as: "beats.distributer",
+        claims: 1,
       },
     },
   ])

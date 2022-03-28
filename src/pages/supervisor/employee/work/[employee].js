@@ -65,7 +65,6 @@ export default function Employee({ employeeData }) {
   const ref = useRef();
 
   useEffect(() => {
-    console.log("here");
     if (!isEmployeeUpdating)
       axios
         .get(`/api/supervisor/employee/byId?key=${employee._id}`)
@@ -211,7 +210,13 @@ export default function Employee({ employeeData }) {
             </li>
 
             <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
-              <a href="/supervisor/all-employee"> {employee.name} Work </a>
+              <a href="/supervisor/all-employee"> {employee.name}</a>
+            </li>
+            <li className="pr-2">
+              <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
+            </li>
+            <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
+              <a>Work </a>
             </li>
           </ul>
         </div>
