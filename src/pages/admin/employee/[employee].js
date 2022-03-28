@@ -204,6 +204,64 @@ export default function Employee({
         </div>
       </section>
 
+      <section className="mt-5">
+        <div className="flex">
+          <Link
+            href={{
+              pathname: "/admin/employee/attendance/[employee]",
+              query: { employee: employee._id },
+            }}
+          >
+            <a className="bg-[#193f6b] px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+              Attendance
+            </a>
+          </Link>
+
+          <Link
+            href={{
+              pathname: "/admin/employee/work/[employee]",
+              query: { employee: employee._id },
+            }}
+          >
+            <a className="bg-[#193f6b] ml-3 px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+              Work
+            </a>
+          </Link>
+
+          <Link
+            href={{
+              pathname: "/admin/employee/location/[employee]",
+              query: { employee: employee._id },
+            }}
+          >
+            <a className="bg-[#193f6b] ml-3 px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+              Location
+            </a>
+          </Link>
+
+          <Link
+            href={{
+              pathname: "/admin/employee/leave/[employee]",
+              query: { employee: employee._id },
+            }}
+          >
+            <a className="bg-[#193f6b] ml-3 px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+              Leave
+            </a>
+          </Link>
+
+          <Link
+            href={{
+              pathname: "/admin/employee/claim/[employee]",
+              query: { employee: employee._id },
+            }}
+          >
+            <a className="bg-[#193f6b] ml-3 px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+              Claim
+            </a>
+          </Link>
+        </div>
+      </section>
       {/* <section className="mt-5">
         <div
           className={
