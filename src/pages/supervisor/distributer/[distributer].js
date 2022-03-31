@@ -66,20 +66,20 @@ export default function Distributer({
         <div className="justify-between flex">
           <ul className="flex justify-start mt-1">
             <li className="pr-2 text-[16px] text-[#ffffff]">
-              <Link href="/admin/dashboard"> Home </Link>{" "}
+              <Link href="/supervisor/distributer"> Home </Link>{" "}
             </li>
             <li className="pr-2">
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
             </li>
             <li className="pr-2 text-[16px]  text-[#ffffff]">
-              <Link href="/admin/distributer"> Distributor Management </Link>
+              <Link href="#"> Distributor Management </Link>
             </li>
             <li className="pr-2">
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
             </li>
             )
             <li className="pr-2 text-[16px]  text-[#ffffff]">
-              <a href="/admin/distributer"> {distributer.name} </a>
+              <a href="#"> {distributer.name} </a>
             </li>
           </ul>
           {/* <ul className="flex justify-end ">
