@@ -7,7 +7,13 @@ import dbConnect, { Jsonify } from "middleware/database";
 import EmployeeModel from "models/Employee";
 
 import { rgbDataURL } from "util/ColorDataUrl";
-import { IconButton } from "@mui/material";
+import {
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import axios from "axios";
 
 export async function getServerSideProps({ query }) {
@@ -26,7 +32,25 @@ export async function getServerSideProps({ query }) {
 export default function Employee({ employee }) {
   const color = "dark";
   const router = useRouter();
+  const handleStatusChange = (item, e) => {
+    const r = confirm("Are you sure you want to change the status?");
 
+    if (!r) return false;
+    const formData = {
+      eid: employee._id,
+      lid: item._id,
+      attendanceStatus: e.target.value,
+    };
+    // console.log(formData);
+    axios
+      .put(`/api/supervisor/employee/leave`, formData)
+      .then(({ data }) => {
+        // router.replace([router.asPath]);
+
+        router.reload();
+      })
+      .catch((e) => console.log(e));
+  };
   return (
     <>
       <div className="px-2 py-3 bg-slate-600 rounded pl-4 text-white shadow mb-5 backdrop-blur-[5px] space-y-1">
@@ -125,6 +149,16 @@ export default function Employee({ employee }) {
               >
                 Status
               </th>
+              <th
+                className={
+                  "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                  (color === "light"
+                    ? "bg-slate-50 text-slate-500 border-slate-100"
+                    : "bg-slate-600 text-slate-200 border-slate-500")
+                }
+              >
+                Change Status
+              </th>
 
               <th
                 className={
@@ -155,10 +189,37 @@ export default function Employee({ employee }) {
                   </td>
 
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    <i className={`fas fa-circle ${"text-red-500"} mr-2`}></i>
+                    <i
+                      className={`fas fa-circle ${
+                        item.status == "pending"
+                          ? "text-orange-500"
+                          : item.status == "Approved"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      } mr-2`}
+                    ></i>
                     {item.status}
                   </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <FormControl sx={{ minWidth: 140, marginTop: 1 }}>
+                      <InputLabel id="demo-simple-select-label">
+                        Status
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={item.status === "pending" ? "" : item.status}
+                        label="status"
+                        onChange={(e) => {
+                          handleStatusChange(item, e);
+                        }}
+                      >
+                        <MenuItem value={"Approved"}>Approved</MenuItem>
 
+                        <MenuItem value={"Rejected"}>Rejected</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </td>
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
                     <i className="fas fa-calendar text-orange-500 mr-2"></i>
                     {moment(item.createdAt).format("Do, MMM YY hh:mm a")}

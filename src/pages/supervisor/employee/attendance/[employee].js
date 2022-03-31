@@ -7,7 +7,13 @@ import dbConnect, { Jsonify } from "middleware/database";
 import EmployeeModel from "models/Employee";
 import { useRef, useState } from "react";
 import { rgbDataURL } from "util/ColorDataUrl";
-import { IconButton } from "@mui/material";
+import {
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import axios from "axios";
 import { Loader } from "@googlemaps/js-api-loader";
 
@@ -52,7 +58,24 @@ export default function Employee({ employee }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }
+  const handleStatusChange = (item, e) => {
+    const r = confirm("Are you sure you want to change the status?");
 
+    if (!r) return false;
+    const formData = {
+      id: employee._id,
+      aid: item._id,
+      status: e.target.value,
+    };
+    // console.log(formData);
+    axios
+      .put(`/api/supervisor/employee/updateLateSignInStatus`, formData)
+      .then(({ data }) => {
+        // router.replace([router.asPath]);
+        router.reload();
+      })
+      .catch((e) => console.log(e));
+  };
   // const source = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBpF6UO18TuzqIXwWlpZzQ9FJvV74xCmK8&callback=initMap`;
 
   const handlePreview = (distributer, long, lat) => {
@@ -237,7 +260,16 @@ export default function Employee({ employee }) {
               >
                 Late SignIn Status
               </th>
-
+              <th
+                className={
+                  "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                  (color === "light"
+                    ? "bg-slate-50 text-slate-500 border-slate-100"
+                    : "bg-slate-600 text-slate-200 border-slate-500")
+                }
+              >
+                Change Late SignIn Status
+              </th>
               <th
                 className={
                   "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
@@ -310,7 +342,26 @@ export default function Employee({ employee }) {
                       ? "Not Found"
                       : item.lateSignInStatus}
                   </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <FormControl sx={{ minWidth: 140, marginTop: 1 }}>
+                      <InputLabel id="demo-simple-select-label">
+                        Status
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={item.lateSignInStatus}
+                        label="status"
+                        onChange={(e) => {
+                          handleStatusChange(item, e);
+                        }}
+                      >
+                        <MenuItem value={"Approved"}>Approved</MenuItem>
 
+                        <MenuItem value={"Rejected"}>Rejected</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </td>
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
                     {moment(item.createdAt).format("Do, MMM YY hh:mm a")}
                   </td>

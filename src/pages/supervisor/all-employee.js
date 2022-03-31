@@ -41,6 +41,7 @@ export async function getServerSideProps(context) {
       employeesCount: employeesCount,
       supervisors: Jsonify(supervisors),
       limit: limit,
+      supervisor: session.id,
     },
   };
 }
@@ -50,6 +51,7 @@ export default function Employee({
   employeesCount,
   limit,
   supervisors,
+  supervisor,
 }) {
   const color = "light";
   const router = useRouter();
@@ -84,6 +86,18 @@ export default function Employee({
 
             <li className="pr-2 text-[18px] pt-1  text-[#ffffff]">
               <Link href="/supervisor/all-employee"> Employee Management </Link>
+            </li>
+          </ul>
+          <ul className="flex justify-end ">
+            <li className="pr-2 text-[16px] bg-[#fefefe] text-[#313131] font-semibold pl-4  pr-5 py-2 rounded-3xl ">
+              <Link
+                href={{
+                  pathname: "/supervisor/employee/add-employee",
+                  query: { supervisor: supervisor },
+                }}
+              >
+                <a> Add Employee</a>
+              </Link>
             </li>
           </ul>
         </div>

@@ -42,6 +42,8 @@ export async function getServerSideProps({ query }) {
       $project: {
         _id: 1,
         name: 1,
+        phone: 1,
+        email: 1,
         locations: 1,
       },
     },
@@ -302,16 +304,16 @@ export default function Employee({ employeeData, id }) {
 
             <div className="tracking-wider text-slate-700">
               <p className="capitalize">
-                <i className="fa fa-user"></i> {preview?.name}
+                <i className="fa fa-user"></i> {employee[0]?.name}
               </p>
               <div className="flex space-x-3 flex-wrap">
                 <p className="space-x-2">
                   <i className="fa fa-envelope text-orange-400"></i>
-                  <span>{preview?.email}</span>
+                  <span>{employee[0]?.email}</span>
                 </p>
                 <p>
                   <i className="fa fa-phone-alt text-orange-400"></i>{" "}
-                  {preview?.phone}
+                  {employee[0]?.phone}
                 </p>
               </div>
               <div className="mt-5">
@@ -324,7 +326,8 @@ export default function Employee({ employeeData, id }) {
               </div>
               <div className="m-3">
                 <p>
-                  <b>SignIn Address</b>
+                  <i className="fa fa-map text-orange-400 mr-2"></i>
+                  <b>Address</b>
                   <br></br>
                   <p>
                     <b> {!data ? "Not Available" : data?.display_name} </b>

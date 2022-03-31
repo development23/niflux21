@@ -19,7 +19,7 @@ export async function getServerSideProps({ query }) {
   const distributerCount = await DistributerModel.count();
   const distributer = await DistributerModel.find({})
     .limit(limit)
-    .sort({ createdAt: "desc" })
+    .sort({ name: 1 })
     .skip(page ? (page - 1) * limit : 0)
     .exec();
 
@@ -41,7 +41,7 @@ export default function Distributer({
   limit,
   supervisors,
 }) {
-  const color = "light";
+  const color = "dark";
   const [preview, setPreview] = useState(null);
   const router = useRouter();
   const previewRef = useRef(null);
@@ -155,6 +155,7 @@ export default function Distributer({
             <Input
               placeholder="Search Distributor"
               variant="standard"
+              className="text-white"
               onChange={handleSearch}
             />
           </div>

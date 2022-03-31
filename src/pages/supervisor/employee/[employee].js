@@ -72,14 +72,14 @@ export default function Employee({ employee }) {
                 </h2>
               </div>
 
-              {/* <IconButton
+              <IconButton
                 aria-label="Edit"
                 onClick={() => router.push("edit-employee?key=" + employee._id)}
               >
                 <i className="fa fa-pen text-white" />
               </IconButton>
 
-              <IconButton
+              {/* <IconButton
                 aria-label="Attendance"
                 onClick={() => router.push("attendance?eid=" + employee._id)}
               >

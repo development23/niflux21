@@ -267,7 +267,9 @@ export default function Employee({ employee }) {
                     {/* <i className="fas fa-calendar text-orange-500 mr-2"></i> */}
                     <i class="fas fa-clock text-orange-500 mr-2"></i>
                     {moment(`${item.signIn}`).format("hh:mm A")} / <br></br>
-                    {moment(`${item.signOut}`).format("hh:mm A")}
+                    {item.signOut
+                      ? moment(`${item.signOut}`).format("hh:mm A")
+                      : "Not Signed Out Yet"}
                   </td>
 
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
@@ -287,19 +289,27 @@ export default function Employee({ employee }) {
                   </td>
 
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    <button
-                      onClick={() =>
-                        handlePreview(
-                          employee,
-                          item.signOutCoordinates.longitude,
-                          item.signOutCoordinates.latitude
-                        )
-                      }
-                    >
-                      <a className="bg-[#ee571b] px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
-                        SignOut
-                      </a>
-                    </button>
+                    {item.signOut ? (
+                      <button
+                        onClick={() =>
+                          handlePreview(
+                            employee,
+                            item.signOutCoordinates.longitude,
+                            item.signOutCoordinates.latitude
+                          )
+                        }
+                      >
+                        <a className="bg-[#ee571b] px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+                          SignOut
+                        </a>
+                      </button>
+                    ) : (
+                      <button>
+                        <a className="bg-slate-500 px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+                          Not Yet
+                        </a>
+                      </button>
+                    )}
                   </td>
 
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
