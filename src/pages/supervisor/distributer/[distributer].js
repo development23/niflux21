@@ -4,23 +4,23 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 
 import dbConnect, { Jsonify } from "middleware/database";
-import SupervisorModel from "models/Supervisor";
+import DistributerModel from "models/Distributer";
 import Paginate from "components/Common/Paginate";
-import Employee from "models/Employee";
+import Property from "models/Property";
 import { rgbDataURL } from "util/ColorDataUrl";
 import { IconButton } from "@mui/material";
 import axios from "axios";
 
 export async function getServerSideProps({ query }) {
-  const { supervisor, page } = query;
-  // console.log(supervisor);
+  const { distributer, page } = query;
+  // console.log(distributer);
   const limit = 10;
 
   await dbConnect();
-  const supervisorData = await SupervisorModel.findOne({ _id: supervisor });
+  const distributerData = await DistributerModel.findOne({ _id: distributer });
 
-  const employeeCount = await Employee.find({ vid: supervisor }).count();
-  const employees = await Employee.find({ supervisor: supervisor })
+  const propertyCount = await Property.find({ vid: distributer }).count();
+  const properties = await Property.find({ vid: distributer })
     .limit(limit)
     .sort({ createdAt: "desc" })
     .skip(page ? (page - 1) * limit : 0)
@@ -28,34 +28,34 @@ export async function getServerSideProps({ query }) {
 
   return {
     props: {
-      supervisor: Jsonify(supervisorData),
-      employeeCount: employeeCount,
-      employees: Jsonify(employees),
+      distributer: Jsonify(distributerData),
+      propertyCount: propertyCount,
+      properties: Jsonify(properties),
       limit: limit,
     },
   };
 }
 
-export default function Supervisor({
-  supervisor,
-  employeeCount,
-  employees,
+export default function Distributer({
+  distributer,
+  propertyCount,
+  properties,
   limit,
 }) {
   const color = "dark";
   const router = useRouter();
 
-  const handleSupervisorDeletion = (supervisorId) => {
+  const handleDistributerDeletion = (distributerId) => {
     const r = confirm(
-      "Are your sure you want to delete this supervisor. With this all the Employee of this supervisor will be deleted too?"
+      "Are your sure you want to delete this distributer. With this all the property of this distributer will be deleted too?"
     );
     if (!r) return;
 
     axios
-      .delete(`/api/admin/supervisor?supervisor=${supervisorId}`)
+      .delete(`/api/admin/distributer?distributer=${distributerId}`)
       .then(({ data }) => {
         console.log(data);
-        router.replace("/admin/supervisor");
+        router.replace("/admin/distributer");
       })
       .catch((err) => console.log(err));
   };
@@ -72,28 +72,28 @@ export default function Supervisor({
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
             </li>
             <li className="pr-2 text-[16px]  text-[#ffffff]">
-              <Link href="/admin/supervisor"> Supervisor Management </Link>
+              <Link href="/admin/distributer"> Distributor Management </Link>
             </li>
             <li className="pr-2">
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
             </li>
-
+            )
             <li className="pr-2 text-[16px]  text-[#ffffff]">
-              <a href="/admin/supervisor"> {supervisor.name} </a>
+              <a href="/admin/distributer"> {distributer.name} </a>
             </li>
           </ul>
-          <ul className="flex justify-end ">
+          {/* <ul className="flex justify-end ">
             <li className="pr-2 text-[16px] bg-[#fefefe] text-[#313131] font-semibold pl-4  pr-5 py-2 rounded-3xl ">
               <Link
                 href={{
-                  pathname: "/admin/employee/add-employee",
-                  query: { supervisor: supervisor._id },
+                  pathname: "/admin/property/add-property",
+                  query: { distributer: distributer._id },
                 }}
               >
-                <a> Add Employee</a>
+                <a> Add Distributor</a>
               </Link>
             </li>
-          </ul>
+          </ul> */}
         </div>
       </div>
 
@@ -113,14 +113,14 @@ export default function Supervisor({
                     (color === "light" ? "text-slate-700" : "text-white")
                   }
                 >
-                  <span className="capitalize">{supervisor.name} Details</span>
+                  <span className="capitalize">{distributer.name} Details</span>
                 </h2>
               </div>
 
-              <IconButton
+              {/* <IconButton
                 aria-label="delete"
                 onClick={() =>
-                  router.push("edit-supervisor?key=" + supervisor._id)
+                  router.push("edit-distributer?key=" + distributer._id)
                 }
               >
                 <i className="fa fa-pen text-red-400" />
@@ -128,10 +128,10 @@ export default function Supervisor({
 
               <IconButton
                 aria-label="delete"
-                onClick={() => handleSupervisorDeletion(supervisor._id)}
+                onClick={() => handleDistributerDeletion(distributer._id)}
               >
                 <i className="fa fa-trash text-red-400" />
-              </IconButton>
+              </IconButton> */}
             </div>
           </div>
           <div className="block w-full  ">
@@ -140,7 +140,7 @@ export default function Supervisor({
                 <div className="w-full overflow-hidden xl:my-2 xl:px-4 xl:w-full">
                   <p className="text-[18px] ">
                     Name :{" "}
-                    <span className="text-[18px] "> {supervisor?.name} </span>
+                    <span className="text-[18px] "> {distributer?.name} </span>
                   </p>
                 </div>
 
@@ -149,7 +149,7 @@ export default function Supervisor({
                     Mobile No :{" "}
                     <span className="text-[16px] ">
                       {" "}
-                      +91-{supervisor?.phone}{" "}
+                      +91-{distributer?.phone}{" "}
                     </span>
                   </p>
                 </div>
@@ -157,21 +157,21 @@ export default function Supervisor({
                 <div className="w-full overflow-hidden xl:my-2 xl:px-4 xl:w-1/2">
                   <p className="text-[17px] ">
                     Email :{" "}
-                    <span className="text-[16px] "> {supervisor?.email} </span>
+                    <span className="text-[16px] "> {distributer?.email} </span>
                   </p>
                 </div>
 
                 <div className="w-full overflow-hidden xl:my-2 xl:px-4 xl:w-1/2">
                   <p className="text-[17px] ">
                     City :{" "}
-                    <span className="text-[16px] "> {supervisor?.city} </span>
+                    <span className="text-[16px] "> {distributer?.city} </span>
                   </p>
                 </div>
 
                 <div className="w-full overflow-hidden xl:my-2 xl:px-4 xl:w-1/2">
                   <p className="text-[17px] ">
                     State :{" "}
-                    <span className="text-[16px] "> {supervisor?.state} </span>
+                    <span className="text-[16px] "> {distributer?.state} </span>
                   </p>
                 </div>
 
@@ -180,7 +180,7 @@ export default function Supervisor({
                     Address :{" "}
                     <span className="text-[16px] ">
                       {" "}
-                      {supervisor?.address}{" "}
+                      {distributer?.address}{" "}
                     </span>
                   </p>
                 </div>
@@ -190,7 +190,7 @@ export default function Supervisor({
                     Created at :
                     <span className="text-[16px] ">
                       {" "}
-                      {moment(supervisor?.createdAt).format(
+                      {moment(distributer?.createdAt).format(
                         "DD MMMM YYYY, hh:mm:ss A"
                       )}{" "}
                     </span>
@@ -209,7 +209,7 @@ export default function Supervisor({
             (color === "light" ? "bg-white" : "bg-slate-700 text-white")
           }
         >
-          <div className="rounded-t mb-0 px-4 py-3 border-0">
+          {/* <div className="rounded-t mb-0 px-4 py-3 border-0">
             <div className="flex flex-wrap items-center">
               <div className="relative w-full px-4 max-w-full text-center flex-grow flex-1">
                 <h2
@@ -218,14 +218,14 @@ export default function Supervisor({
                     (color === "light" ? "text-slate-700" : "text-white")
                   }
                 >
-                  Employees of{" "}
-                  <span className="capitalize">{supervisor.name}</span>
+                  Properties of{" "}
+                  <span className="capitalize">{distributer.name}</span>
                 </h2>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="block w-full overflow-x-auto">
-            <table className="items-center w-full bg-transparent border-collapse">
+            {/* <table className="items-center w-full bg-transparent border-collapse">
               <thead>
                 <tr>
                   <th
@@ -236,20 +236,8 @@ export default function Supervisor({
                         : "bg-slate-600 text-slate-200 border-slate-500")
                     }
                   >
-                    Employee
+                    Property
                   </th>
-
-                  <th
-                    className={
-                      "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
-                      (color === "light"
-                        ? "bg-slate-50 text-slate-500 border-slate-100"
-                        : "bg-slate-600 text-slate-200 border-slate-500")
-                    }
-                  >
-                    Department
-                  </th>
-
                   <th
                     className={
                       "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
@@ -294,16 +282,39 @@ export default function Supervisor({
                 </tr>
               </thead>
               <tbody>
-                {employees.map((item, index) => (
+                {properties.map((item, index) => (
                   <tr key={item._id}>
-                    <th className="border-t-0 px-6 text-left border-l-0 border-r-0 text-xs whitespace-nowrap p-4 capitalize">
-                      {item.name}
+                    <th className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left capitalize">
+                      <span
+                        className={
+                          "ml-3 font-bold capitalize" +
+                          +(color === "light" ? "text-slate-600" : "text-white")
+                        }
+                      >
+                        <Link
+                          href={{
+                            pathname: "/admin/property/[property]",
+                            query: { property: item.slug },
+                          }}
+                        >
+                          <a className="flex items-center space-x-2">
+                            <span className="w-12 h-12">
+                              <Image
+                                src={item.thumbnail}
+                                className="h-12 w-12 bg-white rounded-full border"
+                                alt="..."
+                                width={40}
+                                height={40}
+                                quality={60}
+                                placeholder={rgbDataURL(2, 129, 210)}
+                                layout="responsive"
+                              />
+                            </span>{" "}
+                            <span>{item.name}</span>
+                          </a>
+                        </Link>
+                      </span>
                     </th>
-
-                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                      {item.department}
-                    </td>
-
                     <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                       <i className="fas fa-map-marker text-green-500 mr-2"></i>{" "}
                       {item.city}, {item.state}
@@ -328,7 +339,7 @@ export default function Supervisor({
                         aria-label="delete"
                         onClick={() =>
                           router.push(
-                            `/admin/employee/edit-employee?key=${item._id}`
+                            `/admin/property/edit-property?key=${item._id}`
                           )
                         }
                       >
@@ -338,15 +349,14 @@ export default function Supervisor({
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table> */}
 
-            <Paginate
+            {/* <Paginate
               page={router.query.page}
               limit={limit}
-              count={employeeCount}
-              // link="/admin/supervisor"
-              link={`/admin/supervisor/${supervisor._id}`}
-            />
+              count={propertyCount}
+              link="/admin/distributer"
+            /> */}
           </div>
         </div>
       </section>
