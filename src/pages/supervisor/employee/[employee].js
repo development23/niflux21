@@ -46,7 +46,7 @@ export default function Employee({ employee }) {
             </li>
 
             <li className="pr-2 text-[16px]  text-[#ffffff] capitalize">
-              <a href="/supervisor/all-employee"> {employee.name} </a>
+              <a href="#"> {employee.name} </a>
             </li>
           </ul>
         </div>

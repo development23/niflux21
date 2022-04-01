@@ -52,10 +52,10 @@ export default function Distributer({
     if (!r) return;
 
     axios
-      .delete(`/api/admin/distributer?distributer=${distributerId}`)
+      .delete(`/api/supervisor/distributer?distributer=${distributerId}`)
       .then(({ data }) => {
         console.log(data);
-        router.replace("/admin/distributer");
+        router.replace("/supervisor/distributer");
       })
       .catch((err) => console.log(err));
   };
@@ -117,7 +117,7 @@ export default function Distributer({
                 </h2>
               </div>
 
-              {/* <IconButton
+              <IconButton
                 aria-label="delete"
                 onClick={() =>
                   router.push("edit-distributer?key=" + distributer._id)
@@ -126,7 +126,7 @@ export default function Distributer({
                 <i className="fa fa-pen text-red-400" />
               </IconButton>
 
-              <IconButton
+              {/* <IconButton
                 aria-label="delete"
                 onClick={() => handleDistributerDeletion(distributer._id)}
               >

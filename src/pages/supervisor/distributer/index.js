@@ -122,13 +122,13 @@ export default function Distributer({
               <Link href="#"> Distributor Management </Link>
             </li>
           </ul>
-          {/* <ul className="flex justify-end ">
+          <ul className="flex justify-end ">
             <li className="pr-2 text-[16px] bg-[#fefefe] text-[#313131] font-semibold pl-4  pr-5 py-2 rounded-3xl ">
               <Link href="/supervisor/distributer/add-distributer">
                 Add distributor
               </Link>
             </li>
-          </ul> */}
+          </ul>
         </div>
       </div>
 

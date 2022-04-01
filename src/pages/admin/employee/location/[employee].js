@@ -14,8 +14,8 @@ import { Loader } from "@googlemaps/js-api-loader";
 
 export async function getServerSideProps({ query }) {
   const { employee, page } = query;
-  const startOfMonth = moment().startOf("month").toDate();
-  const endOfMonth = moment().endOf("month").toDate();
+  const startOfMonth = moment().subtract(5, "years").startOf("year").toDate();
+  const endOfMonth = moment().endOf("year").toDate();
   await dbConnect();
 
   const employeeData = await EmployeeModel.aggregate([
@@ -67,9 +67,8 @@ export default function Employee({ employeeData, id }) {
   // useEffect(() => {
   //   console.log(employee[0].name);
   // }, []);
-  const [selectedDate, setSelectedDate] = useState(
-    moment().format("YYYY-MM-DD")
-  );
+  const [startDate, setStartDate] = useState(moment().format("YYYY-MM-DD"));
+  const [endDate, setEndDate] = useState(moment().format("YYYY-MM-DD"));
   let googlemap = useRef(null);
 
   useOutsideAlerter(previewRef);
@@ -138,12 +137,15 @@ export default function Employee({ employeeData, id }) {
     }
   };
 
-  const handleDateFilter = (date) => {
+  const handleDateFilter = (item) => {
     // console.log(moment().format());
     axios
       .post(`/api/admin/employee/location/filter`, {
         eid: eid,
-        date: date,
+        date: {
+          startDate: startDate,
+          endDate: item,
+        },
       })
       .then(({ data }) => {
         setEmployee(data.employee);
@@ -157,13 +159,16 @@ export default function Employee({ employeeData, id }) {
         <div className="justify-between flex">
           <ul className="flex justify-start mt-1">
             <li className="pr-2 text-[16px] text-[#ffffff]">
-              <Link href="/admin/dashboard"> Home </Link>{" "}
+              <Link href="/admin/employee"> Home </Link>{" "}
             </li>
             <li className="pr-2">
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
             </li>
             <li className="pr-2 text-[16px]  text-[#ffffff]">
-              <a> Location Management </a>
+              <a href={`/admin/employee/${employee[0]?._id}`}>
+                {" "}
+                Location Management{" "}
+              </a>
             </li>
             <li className="pr-2">
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
@@ -195,18 +200,34 @@ export default function Employee({ employeeData, id }) {
         </button>
 
         <span className="ml-5 mb-5 mt-5 ">
+          <a className="mr-2">From</a>
           <input
             type="date"
             name="select month"
             className="bg-gray-200 p-1 border-2 border-[#193f6b] mt-5"
-            value={selectedDate}
+            value={startDate}
             onChange={(e) => {
-              handleDateFilter(e.target.value), setSelectedDate(e.target.value);
+              setStartDate(e.target.value);
             }}
             max={moment().format("YYYY-MM-DD")}
           />
         </span>
+        <span className="ml-5 mb-5 mt-5 ">
+          <a className="mr-2">To</a>
+          <input
+            type="date"
+            name="select month"
+            className="bg-gray-200 p-1 border-2 border-[#193f6b] mt-5"
+            value={endDate}
+            onChange={(e) => {
+              setEndDate(e.target.value), handleDateFilter(e.target.value);
+            }}
+            max={moment().format("YYYY-MM-DD")}
+            min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
+          />
+        </span>
       </div>
+
       <div className="block w-full overflow-x-auto">
         {/* Projects table */}
         <table className="items-center w-full bg-transparent border-collapse">

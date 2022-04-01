@@ -6,13 +6,13 @@ import moment from "moment";
 const handler = createHandler();
 
 handler.post((req, res) => {
-  // console.log(req.body);
+  console.log(req.body);
 
-  let startOfMonth = moment(req.body.date).startOf("day").toDate();
-  let endOfMonth = moment(req.body.date).endOf("day").toDate();
+  let startOfMonth = moment(req.body.date.startDate).startOf("day").toDate();
+  let endOfMonth = moment(req.body.date.endDate).endOf("day").toDate();
 
-  // console.log(startOfMonth);
-  // console.log(endOfMonth);
+  console.log(startOfMonth);
+  console.log(endOfMonth);
 
   Employee.aggregate([
     {

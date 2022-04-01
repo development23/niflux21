@@ -8,8 +8,9 @@ import SupervisorModel from "models/Supervisor";
 import Paginate from "components/Common/Paginate";
 import Employee from "models/Employee";
 import { rgbDataURL } from "util/ColorDataUrl";
-import { IconButton } from "@mui/material";
+import { IconButton, Input } from "@mui/material";
 import axios from "axios";
+import { useState } from "react";
 
 export async function getServerSideProps({ query }) {
   const { supervisor, page } = query;
@@ -22,7 +23,7 @@ export async function getServerSideProps({ query }) {
   const employeeCount = await Employee.find({ vid: supervisor }).count();
   const employees = await Employee.find({ supervisor: supervisor })
     .limit(limit)
-    .sort({ createdAt: "desc" })
+    .sort({ name: 1 })
     .skip(page ? (page - 1) * limit : 0)
     .exec();
 
@@ -44,7 +45,7 @@ export default function Supervisor({
 }) {
   const color = "dark";
   const router = useRouter();
-
+  const [employeeState, setEmployeeState] = useState(employees);
   const handleSupervisorDeletion = (supervisorId) => {
     const r = confirm(
       "Are your sure you want to delete this supervisor. With this all the Employee of this supervisor will be deleted too?"
@@ -59,7 +60,13 @@ export default function Supervisor({
       })
       .catch((err) => console.log(err));
   };
-
+  const handleSearch = ({ target }) => {
+    setEmployeeState(
+      employees.filter((item) =>
+        item.name.toLowerCase().includes(target.value.toLowerCase())
+      )
+    );
+  };
   return (
     <>
       <div className="px-2 py-3 bg-slate-600 rounded pl-4 text-white shadow mb-5 backdrop-blur-[5px] space-y-1">
@@ -224,6 +231,14 @@ export default function Supervisor({
               </div>
             </div>
           </div>
+          <div className="m-5 md:flex">
+            <Input
+              placeholder="Search Employee"
+              variant="standard"
+              className="text-white"
+              onChange={handleSearch}
+            />
+          </div>
           <div className="block w-full overflow-x-auto">
             <table className="items-center w-full bg-transparent border-collapse">
               <thead>
@@ -294,7 +309,7 @@ export default function Supervisor({
                 </tr>
               </thead>
               <tbody>
-                {employees.map((item, index) => (
+                {employeeState.map((item, index) => (
                   <tr key={item._id}>
                     <th className="border-t-0 px-6 text-left border-l-0 border-r-0 text-xs whitespace-nowrap p-4 capitalize">
                       {item.name}
@@ -334,6 +349,11 @@ export default function Supervisor({
                       >
                         <i className="fa fa-edit text-slate-300" />
                       </IconButton>
+                      <Link href={`/admin/employee/${item._id}`}>
+                        <a className="bg-[#ee571b] px-4 py-2 text-[#ffffff] text-base font-semibold rounded-[5px]   ">
+                          View
+                        </a>
+                      </Link>
                     </td>
                   </tr>
                 ))}

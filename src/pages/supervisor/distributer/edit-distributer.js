@@ -67,6 +67,8 @@ export default function EditDistributer({ distributer }) {
   const [cities, setCities] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [isProfilePhotoUpdating, setProfilePhotoUpdating] = useState(false);
+  const [customCity, setCustomCity] = useState(false);
+  const [copyCities, setCopyCities] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(distributer?.profile_image);
   const router = useRouter();
 
@@ -106,6 +108,7 @@ export default function EditDistributer({ distributer }) {
           )
           .then(({ data }) => {
             setCities(data);
+            setCopyCities(data);
             setIsReady(true);
           })
           .catch((err) => console.log(err));
@@ -130,9 +133,8 @@ export default function EditDistributer({ distributer }) {
     };
 
     axios
-      .put(`/api/admin/distributer`, values)
+      .put(`/api/supervisor/distributer`, values)
       .then(({ data }) => {
-        console.log(data);
         setOpen(true);
         setIsReady(true);
         router.reload();
@@ -173,7 +175,7 @@ export default function EditDistributer({ distributer }) {
         const fileURL = data.secure_url;
         setProfilePhoto(fileURL);
         axios
-          .put("/api/admin/distributer", {
+          .put("/api/supervisor/distributer", {
             _id: distributer?._id,
             profile_image: fileURL,
           })
@@ -207,14 +209,14 @@ export default function EditDistributer({ distributer }) {
         <div className="justify-between flex">
           <ul className="flex justify-start ">
             <li className="pr-2 text-[18px] pt-1 text-[#ffffff]">
-              <Link href="/admin/dashboard"> Home </Link>
+              <a href="/supervisor/distributer"> Home </a>
             </li>
             <li className="pr-2 pt-2">
               <i className="fas fa-chevron-right text-[14px] text-[#ffffff]"></i>
             </li>
 
             <li className="pr-2 text-[18px] pt-1  text-[#ffffff]">
-              <Link href="/admin/distributer"> Distributer Management </Link>
+              <a href="/supervisor/distributer"> Distributer Management </a>
             </li>
 
             <li className="pr-2 pt-2">
@@ -222,7 +224,9 @@ export default function EditDistributer({ distributer }) {
             </li>
 
             <li className="pr-2 text-[18px] pt-1  text-[#ffffff]">
-              <p>Edit Distributer | {distributer.name}</p>
+              <a href={`/supervisor/distributer/${distributer._id}`}>
+                Edit Distributer | {distributer.name}
+              </a>
             </li>
           </ul>
         </div>
@@ -440,7 +444,9 @@ export default function EditDistributer({ distributer }) {
                                   },
                                 }
                               )
-                              .then(({ data }) => setCities(data))
+                              .then(({ data }) => {
+                                setCities(data), setCopyCities(data);
+                              })
                               .catch((err) => console.log(err.response.data));
                           }}
                           onBlur={handleBlur("state")}
@@ -466,37 +472,92 @@ export default function EditDistributer({ distributer }) {
                       ) : null}
                     </div>
                     <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
-                      <div className="form-group space-y-2">
-                        <InputLabel id="demo-simple-select-label">
-                          Select City
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-standard-label"
-                          id="demo-simple-select-standard"
-                          value={values.city}
-                          label="Select City"
-                          onChange={handleChange("city")}
-                          onBlur={handleBlur("city")}
-                          fullWidth
-                          error={errors.city && touched.city ? true : false}
-                          placeholder="Enter Distributer's Mobile Number"
-                          variant="standard"
-                          displayEmpty
-                        >
-                          <MenuItem value="">
-                            <em>Select City</em>
-                          </MenuItem>
-                          {cities != null &&
-                            cities.map((item, index) => (
-                              <MenuItem value={item.name} key={item.id}>
-                                {item.name}
+                      {!customCity && (
+                        <div className="form-group space-y-2">
+                          <InputLabel id="demo-simple-select-label">
+                            Select City
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-standard-label"
+                            id="demo-simple-select-standard"
+                            value={values.city}
+                            label="Select City"
+                            onChange={handleChange("city")}
+                            onBlur={handleBlur("city")}
+                            fullWidth
+                            error={errors.city && touched.city ? true : false}
+                            placeholder="Enter Employee's Mobile Number"
+                            variant="standard"
+                            displayEmpty
+                          >
+                            <MenuItem value="">
+                              <em>Select City</em>
+                            </MenuItem>
+                            {cities && (
+                              <MenuItem onClick={() => setCustomCity(true)}>
+                                <em>Add Custom</em>
                               </MenuItem>
-                            ))}
-                        </Select>
-                      </div>
-                      {errors.city && touched.city ? (
+                            )}
+
+                            {cities != null &&
+                              cities.map((item, index) => (
+                                <MenuItem value={item.name} key={index}>
+                                  {item.name}
+                                </MenuItem>
+                              ))}
+                          </Select>
+                        </div>
+                      )}
+                      {!customCity && errors.city && touched.city ? (
                         <p className="text-red-800">{errors.city}</p>
                       ) : null}
+                      {customCity && (
+                        <div className="form-group flex flex-wrap items-center px-2 space-y-2">
+                          <div className="w-3/4">
+                            <Input
+                              label="Type City"
+                              variant="standard"
+                              type="text"
+                              name="city"
+                              placeholder="Type City"
+                              autoComplete="off"
+                              onChange={handleChange("city")}
+                              onBlur={({ target }) => {
+                                let text = target.value;
+
+                                const result = cities.includes(
+                                  (item) => item.name == text
+                                );
+
+                                console.log(result);
+
+                                if (!result)
+                                  setCities([{ name: text }, ...cities]),
+                                    setFieldValue("city", text);
+                              }}
+                              // onBlur={handleBlur("city")}
+                              value={values.city}
+                              required
+                              className="w-full py-1 my-2"
+                              error={errors.city && touched.city ? true : false}
+                              multiline
+                              row="4"
+                            />
+                          </div>
+                          <div className="w-1/4">
+                            <Button
+                              onClick={() => {
+                                setCustomCity(false), setCities(copyCities);
+                              }}
+                            >
+                              X
+                            </Button>
+                          </div>
+                          {customCity && errors.city && touched.city ? (
+                            <p className="text-red-800">{errors.city}</p>
+                          ) : null}
+                        </div>
+                      )}
                     </div>
 
                     <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
