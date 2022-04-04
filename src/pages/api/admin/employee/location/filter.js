@@ -38,6 +38,8 @@ handler.post((req, res) => {
       $project: {
         _id: 1,
         name: 1,
+        email: 1,
+        phone: 1,
         locations: 1,
       },
     },

@@ -42,6 +42,8 @@ export async function getServerSideProps({ query }) {
       $project: {
         _id: 1,
         name: 1,
+        email: 1,
+        phone: 1,
         locations: 1,
       },
     },
@@ -64,8 +66,9 @@ export default function Employee({ employeeData, id }) {
   const previewRef = useRef(null);
   const [data, setData] = useState(null);
   const [employee, setEmployee] = useState(employeeData);
+  const [indexItem, setIndexItem] = useState(null);
   // useEffect(() => {
-  //   console.log(employee[0].name);
+  //   console.log(employee);
   // }, []);
   const [startDate, setStartDate] = useState(moment().format("YYYY-MM-DD"));
   const [endDate, setEndDate] = useState(moment().format("YYYY-MM-DD"));
@@ -90,8 +93,9 @@ export default function Employee({ employeeData, id }) {
     };
   }
 
-  const handlePreview = (distributer, long, lat) => {
+  const handlePreview = (distributer, long, lat, item) => {
     // console.log(lat);
+    setIndexItem(item);
     if (lat && long) {
       axios
         .get(
@@ -268,7 +272,8 @@ export default function Employee({ employeeData, id }) {
                         handlePreview(
                           employee,
                           item.locations.longitude,
-                          item.locations.latitude
+                          item.locations.latitude,
+                          item
                         )
                       }
                     >
@@ -331,29 +336,32 @@ export default function Employee({ employeeData, id }) {
 
             <div className="tracking-wider text-slate-700">
               <p className="capitalize">
-                <i className="fa fa-user"></i> {preview?.name}
+                <i className="fa fa-user"></i> {employee[0]?.name}
               </p>
               <div className="flex space-x-3 flex-wrap">
                 <p className="space-x-2">
                   <i className="fa fa-envelope text-orange-400"></i>
-                  <span>{preview?.email}</span>
+                  <span>{employee[0]?.email}</span>
                 </p>
                 <p>
                   <i className="fa fa-phone-alt text-orange-400"></i>{" "}
-                  {preview?.phone}
+                  {employee[0]?.phone}
                 </p>
               </div>
               <div className="mt-5">
-                <p>{preview?.vName}</p>
+                {/* <p>{preview?.vName}</p>
                 <p>{preview?.pName}</p>
-                <p>{preview?.message}</p>
+                <p>{preview?.message}</p> */}
+
                 <p>
-                  {moment(preview?.createdAt).format("DD MMM, YYYY hh:mm:ss A")}
+                  {moment(indexItem?.locations.createdAt).format(
+                    "DD MMM, YYYY hh:mm:ss A"
+                  )}
                 </p>
               </div>
               <div className="m-3">
                 <p>
-                  <b>SignIn Address</b>
+                  <b>Address</b>
                   <br></br>
                   <p>
                     <b> {!data ? "Not Available" : data?.display_name} </b>

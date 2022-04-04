@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const distributerSchema = new mongoose.Schema(
   {
@@ -67,6 +67,10 @@ const distributerSchema = new mongoose.Schema(
         type: String,
         required: [true, "Please provide a latitude for this Distributer."],
       },
+    },
+    employeeId: {
+      type: Schema.Types.ObjectId,
+      default: null,
     },
     active: {
       type: Boolean,
