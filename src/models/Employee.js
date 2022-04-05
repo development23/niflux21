@@ -148,6 +148,14 @@ const employeeSchema = new mongoose.Schema(
               type: String,
               default: null,
             },
+            // distributerType: {
+            //   type: String,
+            //   default: null,
+            // },
+            // distributerCategory: {
+            //   type: String,
+            //   default: null,
+            // },
             jointEmployee: {
               type: Schema.Types.ObjectId,
               default: null,

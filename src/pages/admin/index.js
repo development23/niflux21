@@ -285,7 +285,7 @@ const Main = () => (
     initial={{ y: 15, opacity: 0 }}
     className="p-6 sm:p-10 space-y-6"
   >
-    <div className="flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between">
+    {/* <div className="flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between">
       <div className="mr-6">
         <h1 className="text-4xl font-semibold mb-2">Dashboard</h1>
         <h2 className="text-gray-600 ml-0.5">Mobile UX/UI Design course</h2>
@@ -623,21 +623,12 @@ const Main = () => (
         original design
       </a>{" "}
       made by Chili Labs
-    </section>
+    </section> */}
   </motion.main>
 );
 
 function Layout() {
-  return (
-    <div className="flex bg-gray-100 min-h-screen">
-      <Aside></Aside>
-
-      <div className="flex-grow text-gray-800">
-        <Header></Header>
-        <Main></Main>
-      </div>
-    </div>
-  );
+  return <div className="flex bg-gray-100 min-h-screen"></div>;
 }
 
 export default function Home() {
