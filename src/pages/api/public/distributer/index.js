@@ -7,7 +7,7 @@ handler.get(async (req, result) => {
   {
     req.query.type == "All"
       ? Distributer.find({
-          $and: [{ city: req.query.city }, { type: null }],
+          city: req.query.city,
         })
           .then((res) => {
             //   console.log(res);
