@@ -54,6 +54,10 @@ const distributerSchema = new mongoose.Schema(
       required: [true, "Please provide a name for this Distributer."],
       unique: true,
     },
+    type: {
+      type: String,
+      required: true,
+    },
     profile_image: {
       type: String,
       default: null,

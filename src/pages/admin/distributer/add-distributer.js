@@ -43,6 +43,7 @@ const distributerSchema = Yup.object().shape({
   pincode: Yup.string().required("Pincode is required."),
   gst: Yup.string().required("Gst number is required."),
   pan: Yup.string().required("Pan number is required."),
+  type: Yup.string().required("Type is required."),
   // Distributer: Yup.string().required("Distributer is Required."),
 });
 
@@ -55,6 +56,7 @@ const distributerSchema = Yup.object().shape({
 //     },
 //   };
 // }
+const types = ["Super Stockist", "Distributer", "Retailer", "Direct Dealer"];
 
 export default function AddDistributer() {
   const [states, setStates] = useState(null);
@@ -192,6 +194,7 @@ export default function AddDistributer() {
             pincode: "",
             gst: "",
             pan: "",
+            type: "",
             // Distributer: "",
           }}
           onSubmit={handleDistributerSubmission}
@@ -287,7 +290,7 @@ export default function AddDistributer() {
                 ) : null}
               </div>
 
-              <div className="my-4 px-4 w-full overflow-hidden md:w-1/2">
+              <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
                 <div className="form-group space-y-2">
                   <Input
                     label="Distributor's Mobile Number"
@@ -310,7 +313,7 @@ export default function AddDistributer() {
                 ) : null}
               </div>
 
-              <div className="my-4 px-4 w-full overflow-hidden md:w-1/2">
+              <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
                 <div className="form-group space-y-2">
                   <Input
                     label="Distributor's Category"
@@ -331,7 +334,40 @@ export default function AddDistributer() {
                   <p className="text-red-800">{errors.category}</p>
                 ) : null}
               </div>
-
+              <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
+                <div className="form-group space-y-2">
+                  <InputLabel id="demo-simple-select-label">
+                    Select Type (Selected {values.type})
+                  </InputLabel>
+                  {/* {console.log(values.state)} */}
+                  <Select
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    value={values.type}
+                    label="Select Type"
+                    onChange={handleChange("type")}
+                    onBlur={handleBlur("state")}
+                    fullWidth
+                    error={errors.type && touched.type ? true : false}
+                    placeholder="Enter Distributor's Mobile Number"
+                    variant="standard"
+                    displayEmpty
+                  >
+                    <MenuItem value="">
+                      <em>Select Type</em>
+                    </MenuItem>
+                    {types != null &&
+                      types.map((item, index) => (
+                        <MenuItem value={item} key={item}>
+                          {item}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </div>
+                {errors.type && touched.type ? (
+                  <p className="text-red-800">{errors.type}</p>
+                ) : null}
+              </div>
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
                 <div className="form-group space-y-2">
                   <InputLabel id="demo-simple-select-label">
