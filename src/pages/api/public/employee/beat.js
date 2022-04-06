@@ -7,7 +7,6 @@ const handler = createHandler();
 
 handler.post(async (req, res) => {
   req.body.data.travelTime.startTime = moment().format();
-  // console.log(req.body.data.travelTime.startTime);
   Employee.updateOne({ _id: req.body.id }, { $push: { beats: req.body.data } })
     .then((data) => {
       //   console.log(data);

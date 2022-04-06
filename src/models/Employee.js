@@ -148,6 +148,10 @@ const employeeSchema = new mongoose.Schema(
               type: String,
               default: null,
             },
+            officialVisit: {
+              type: Boolean,
+              default: false,
+            },
             // distributerType: {
             //   type: String,
             //   default: null,
