@@ -21,7 +21,7 @@ import moment from "moment";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-const types = ["Super Stockist", "Distributer", "Retailer", "Direct Dealer"];
+const types = ["Super Stockist", "Distributor", "Retailer", "Direct Dealer"];
 const distributerSchema = Yup.object().shape({
   phone: Yup.string()
     .matches(phoneRegExp, "Phone number is not valid")
