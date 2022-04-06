@@ -346,7 +346,7 @@ export default function AddDistributer() {
                     value={values.type}
                     label="Select Type"
                     onChange={handleChange("type")}
-                    onBlur={handleBlur("state")}
+                    onBlur={handleBlur("type")}
                     fullWidth
                     error={errors.type && touched.type ? true : false}
                     placeholder="Enter Distributor's Mobile Number"

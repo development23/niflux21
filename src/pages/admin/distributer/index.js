@@ -41,7 +41,7 @@ export default function Distributer({
   limit,
   supervisors,
 }) {
-  const color = "dark";
+  const color = "light";
   const [preview, setPreview] = useState(null);
   const router = useRouter();
   const previewRef = useRef(null);
@@ -90,13 +90,23 @@ export default function Distributer({
   };
 
   // const [search, setSearch] = React.useState("");
-
+  // console.log(distributerState);
   const handleSearch = ({ target }) => {
-    setDistributerState(
-      distributer.filter((item) =>
-        item.name.toLowerCase().includes(target.value.toLowerCase())
-      )
-    );
+    // console.log(target.value.length);
+    if (target.value.startsWith(" ") || target.value.length < 1) {
+      setDistributerState(distributer);
+    } else {
+      axios
+        .get(`/api/admin/distributer?name=${target.value}`)
+        .then(({ data }) => setDistributerState(data.distributer))
+        .catch((e) => console.log(e));
+    }
+
+    // setDistributerState(
+    //   distributer.filter((item) =>
+    //     item.name.toLowerCase().includes(target.value.toLowerCase())
+    //   )
+    // );
   };
 
   // const data = {
@@ -155,7 +165,7 @@ export default function Distributer({
             <Input
               placeholder="Search Distributor"
               variant="standard"
-              className="text-white"
+              className="text-black "
               onChange={handleSearch}
             />
           </div>

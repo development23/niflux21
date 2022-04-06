@@ -5,6 +5,18 @@ const handler = createHandler();
 
 var bcrypt = require("bcryptjs");
 
+handler.get(async (req, result) => {
+  // console.log(req.query.name.toLowerCase());
+  await Distributer.find({ name: { $regex: req.query.name.toLowerCase() } })
+    .then((res) => {
+      // console.log(res);
+      result.status(201).json({ message: "Success.", distributer: res });
+    })
+    .catch((err) =>
+      result.status(403).json({ message: "Something went wrong", err })
+    );
+});
+
 handler.post(async (req, res) => {
   //   console.log(req.body);
   const data = req.body;
