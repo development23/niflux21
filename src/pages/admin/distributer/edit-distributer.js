@@ -50,7 +50,7 @@ const distributerSchema = Yup.object().shape({
   gst: Yup.string().required("Gst number is required."),
   pan: Yup.string().required("Pan number is required."),
 });
-const types = ["Super Stockist", "Distributer", "Retailer", "Direct Dealer"];
+const types = ["Super Stockist", "Distributor", "Retailer", "Direct Dealer"];
 export async function getServerSideProps({ query }) {
   await dbConnect();
   const { key } = query;
@@ -422,7 +422,7 @@ export default function EditDistributer({ distributer }) {
                           value={values.type}
                           label="Select Type"
                           onChange={handleChange("type")}
-                          onBlur={handleBlur("state")}
+                          onBlur={handleBlur("type")}
                           fullWidth
                           error={errors.type && touched.type ? true : false}
                           placeholder="Enter Distributor's Mobile Number"
