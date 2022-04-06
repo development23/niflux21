@@ -56,7 +56,7 @@ const distributerSchema = Yup.object().shape({
 //     },
 //   };
 // }
-const types = ["Super Stockist", "Distributer", "Retailer", "Direct Dealer"];
+const types = ["Super Stockist", "Distributor", "Retailer", "Direct Dealer"];
 
 export default function AddDistributer() {
   const [states, setStates] = useState(null);
