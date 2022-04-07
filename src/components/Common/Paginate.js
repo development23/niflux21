@@ -11,7 +11,7 @@ export default function Paginate({ page, limit, count, link }) {
         } bg-slate-900 px-4 py-1 rounded shadow`}
       >
         <a href={`${link}?page=${page ? parseInt(page) - 1 : 2}`}>
-          <a className="tracking-widest font-medium">Previous</a>
+          <a className="tracking-widest text-white font-medium">Previous</a>
         </a>
       </div>
 

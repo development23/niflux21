@@ -132,12 +132,12 @@ export default function Home({ csrfToken }) {
                       >
                         Password
                       </label>
-                      <a
+                      {/* <a
                         href="/forgotPassword"
                         className="text-red-600 font-extralight text-xs"
                       >
                         Forgot Password?
-                      </a>
+                      </a> */}
                     </div>
                     <div className="flex justify-between flex-row w-full bg-white rounded border border-gray-300  hover:border-red-600 items-center">
                       <input

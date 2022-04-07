@@ -5,6 +5,9 @@ import { useRouter } from "next/router";
 import dbConnect, { Jsonify } from "middleware/database";
 import SupervisorModel from "models/Supervisor";
 import Paginate from "components/Common/Paginate";
+import { Input } from "@mui/material";
+import { useState } from "react";
+import axios from "axios";
 
 export async function getServerSideProps({ query }) {
   const { page } = query;
@@ -27,8 +30,27 @@ export async function getServerSideProps({ query }) {
 }
 
 export default function Supervisor({ supervisors, supervisorsCount, limit }) {
-  const color = "dark";
+  // const color = "dark";
+  const color = "light";
   const router = useRouter();
+  const [allSupervisors, setAllSupervisors] = useState(supervisors);
+  const handleSearch = ({ target }) => {
+    // console.log(target.value.length);
+    if (target.value.startsWith(" ") || target.value.length < 1) {
+      setAllSupervisors(supervisors);
+    } else {
+      axios
+        .get(`/api/admin/supervisor?name=${target.value}`)
+        .then(({ data }) => setAllSupervisors(data.supervisor))
+        .catch((e) => console.log(e));
+    }
+
+    // setDistributerState(
+    //   distributer.filter((item) =>
+    //     item.name.toLowerCase().includes(target.value.toLowerCase())
+    //   )
+    // );
+  };
 
   return (
     <>
@@ -76,6 +98,15 @@ export default function Supervisor({ supervisors, supervisorsCount, limit }) {
                 </h2>
               </div>
             </div>
+          </div>
+
+          <div className="m-5 md:flex">
+            <Input
+              placeholder="Search Supervisor"
+              variant="standard"
+              // className="text-white"
+              onChange={handleSearch}
+            />
           </div>
           <div className="block w-full overflow-x-auto">
             {/* Projects table */}
@@ -155,7 +186,7 @@ export default function Supervisor({ supervisors, supervisorsCount, limit }) {
                 </tr>
               </thead>
               <tbody>
-                {supervisors.map((supervisor, index) => (
+                {allSupervisors.map((supervisor, index) => (
                   <tr key={supervisor._id}>
                     <th className="border-t-0 pr-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left capitalize">
                       <span

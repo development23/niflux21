@@ -78,6 +78,8 @@ export default function AddSupervisor() {
 
   const handleSupervisorSubmission = (values, { setFieldError, resetForm }) => {
     var bcrypt = require("bcryptjs");
+    values.name = values.name.toLowerCase();
+    values.email = values.email.toLowerCase();
     bcrypt.genSalt(10, function (err, salt) {
       bcrypt.hash(values.password, salt, function (err, hash) {
         values.password = hash;

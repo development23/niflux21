@@ -39,8 +39,8 @@ export default function Employee({
   limit,
   supervisors,
 }) {
-  // const color = "light";
-  const color = "dark";
+  const color = "light";
+  // const color = "dark";
   const [preview, setPreview] = useState(null);
   const router = useRouter();
   const previewRef = useRef(null);
@@ -87,12 +87,30 @@ export default function Employee({
       .catch((e) => console.log(e));
   };
 
+  // const handleSearch = ({ target }) => {
+  //   setEmployeeState(
+  //     employees.filter((item) =>
+  //       item.name.toLowerCase().includes(target.value.toLowerCase())
+  //     )
+  //   );
+  // };
+
   const handleSearch = ({ target }) => {
-    setEmployeeState(
-      employees.filter((item) =>
-        item.name.toLowerCase().includes(target.value.toLowerCase())
-      )
-    );
+    // console.log(target.value.length);
+    if (target.value.startsWith(" ") || target.value.length < 1) {
+      setEmployeeState(employees);
+    } else {
+      axios
+        .get(`/api/admin/employee/searchByEmployeeName?name=${target.value}`)
+        .then(({ data }) => setEmployeeState(data.employee))
+        .catch((e) => console.log(e));
+    }
+
+    // setDistributerState(
+    //   distributer.filter((item) =>
+    //     item.name.toLowerCase().includes(target.value.toLowerCase())
+    //   )
+    // );
   };
 
   return (
@@ -145,7 +163,7 @@ export default function Employee({
             <Input
               placeholder="Search Employee"
               variant="standard"
-              className="text-white"
+              // className="text-white"
               onChange={handleSearch}
             />
           </div>

@@ -135,12 +135,12 @@ export default function Home({ csrfToken }) {
                       >
                         Password
                       </label>
-                      <a
+                      {/* <a
                         href="/forgotPassword"
                         className="text-red-600 font-extralight text-xs"
                       >
                         Forgot Password?
-                      </a>
+                      </a> */}
                     </div>
                     <div className="flex justify-between flex-row w-full bg-white rounded border border-gray-300  hover:border-red-600 items-center">
                       <input
@@ -212,7 +212,7 @@ export default function Home({ csrfToken }) {
                 </div>
               )}
             </Formik>
-            <div className="flex-row flex items-center justify-center mt-3">
+            {/* <div className="flex-row flex items-center justify-center mt-3">
               <h1 className="font-extralight text-xs">New on our platform?</h1>
               <a
                 href="/signup"
@@ -220,13 +220,13 @@ export default function Home({ csrfToken }) {
               >
                 Create an account
               </a>
-            </div>
-            <div className=" flex-row flex items-center justify-between mt-3">
+            </div> */}
+            {/* <div className=" flex-row flex items-center justify-between mt-3">
               <div className="w-2/5 h-px bg-red-600"></div>
               <a>or</a>
               <div className="w-2/5 h-px bg-red-600"></div>
-            </div>
-            <div className="flex-row flex items-center justify-center mt-3">
+            </div> */}
+            {/* <div className="flex-row flex items-center justify-center mt-3">
               <img src="/facebook.png" alt="Vercel Logo" className="h-8 w-8" />
               <img
                 src="/twitter.png"
@@ -234,20 +234,28 @@ export default function Home({ csrfToken }) {
                 className="h-8 w-8 mx-2"
               />
               <img src="/search.png" alt="Vercel Logo" className="h-8 w-8" />
-            </div>
+            </div> */}
           </div>
         </div>
       </main>
 
       <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
+        {/* <a
           className="flex items-center justify-center"
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
           rel="noopener noreferrer"
         >
           Powered by{" "}
-          <img src="/tinder.png" alt="Vercel Logo" className="h-4 ml-2" />
+          <img src="/favicon.ico" alt="Niflux" className="h-4 ml-2" />
+        </a> */}
+        <a
+          className="flex items-center justify-center"
+          href="http://aladinntech.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Powered by ALDS
         </a>
       </footer>
     </div>
