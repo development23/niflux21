@@ -42,7 +42,7 @@ handler.delete(async (req, res) => {
 });
 
 handler.get(async (req, res) => {
-  Supervisor.find({ name: { $regex: req.query.name } })
+  Supervisor.find({ name: { $regex: req.query.name.toLowerCase() } })
     .then((data) => res.status(200).json({ supervisor: data }))
     .catch((err) =>
       res.status(403).json({ message: "Something went wrong", error: err })
