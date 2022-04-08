@@ -53,6 +53,7 @@ export default function AddSupervisor() {
   const [cities, setCities] = useState(null);
   const [workingCity, setWorkingCity] = useState(null);
   const [customCity, setCustomCity] = useState(false);
+  const [customCity2, setCustomCity2] = useState(false);
   const [copyCities, setCopyCities] = useState(null);
   const [open, setOpen] = useState(false);
 
@@ -681,7 +682,7 @@ export default function AddSupervisor() {
                   <p className="text-red-800">{errors.workingState}</p>
                 ) : null}
               </div>
-              <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
+              {/* <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
                 <div className="form-group space-y-2">
                   <InputLabel id="demo-simple-select-label">
                     Select Job City
@@ -715,6 +716,102 @@ export default function AddSupervisor() {
                 {errors.workingCity && touched.workingCity ? (
                   <p className="text-red-800">{errors.workingCity}</p>
                 ) : null}
+              </div> */}
+              <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">
+                {!customCity2 && (
+                  <div className="form-group space-y-2">
+                    <InputLabel id="demo-simple-select-label">
+                      Select Job City
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-standard-label"
+                      id="demo-simple-select-standard"
+                      value={values.workingCity}
+                      label="Select City"
+                      onChange={handleChange("workingCity")}
+                      onBlur={handleBlur("workingCity")}
+                      fullWidth
+                      error={
+                        errors.workingCity && touched.workingCity ? true : false
+                      }
+                      placeholder="Enter Employee's Mobile Number"
+                      variant="standard"
+                      displayEmpty
+                    >
+                      <MenuItem value="">
+                        <em>Select City</em>
+                      </MenuItem>
+                      {workingCity && (
+                        <MenuItem onClick={() => setCustomCity2(true)}>
+                          <em>Add Custom</em>
+                        </MenuItem>
+                      )}
+
+                      {workingCity != null &&
+                        workingCity.map((item, index) => (
+                          <MenuItem value={item.name} key={index}>
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </div>
+                )}
+                {!customCity2 && errors.workingCity && touched.workingCity ? (
+                  <p className="text-red-800">{errors.workingCity}</p>
+                ) : null}
+                {customCity2 && (
+                  <div className="form-group flex flex-wrap items-center px-2 space-y-2">
+                    <div className="w-3/4">
+                      <Input
+                        label="Type City"
+                        variant="standard"
+                        type="text"
+                        name="city"
+                        placeholder="Type City"
+                        autoComplete="off"
+                        onChange={handleChange("workingCity")}
+                        onBlur={({ target }) => {
+                          let text = target.value;
+
+                          const result = cities.includes(
+                            (item) => item.name == text
+                          );
+
+                          // console.log(result);
+
+                          if (!result)
+                            setCities([{ name: text }, ...cities]),
+                              setFieldValue("workingCity", text);
+                        }}
+                        // onBlur={handleBlur("city")}
+                        value={values.workingCity}
+                        required
+                        className="w-full py-1 my-2"
+                        error={
+                          errors.workingCity && touched.workingCity
+                            ? true
+                            : false
+                        }
+                        multiline
+                        row="4"
+                      />
+                    </div>
+                    <div className="w-1/4">
+                      <Button
+                        onClick={() => {
+                          setCustomCity2(false), setCities(copyCities);
+                        }}
+                      >
+                        X
+                      </Button>
+                    </div>
+                    {customCity2 &&
+                    errors.workingCity &&
+                    touched.workingCity ? (
+                      <p className="text-red-800">{errors.workingCity}</p>
+                    ) : null}
+                  </div>
+                )}
               </div>
 
               <div className="my-4 px-4 w-full overflow-hidden md:w-1/3">

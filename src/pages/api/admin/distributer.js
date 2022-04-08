@@ -31,7 +31,17 @@ handler.post(async (req, res) => {
       res.status(403).json({ message: "Something went wrong.", error: err })
     );
 });
+handler.delete(async (req, res) => {
+  const id = req.query.distributer;
 
+  await Distributer.findByIdAndDelete(id)
+    .then((e) =>
+      res.status(200).json({ message: "Record Deleted.", record: e })
+    )
+    .catch((err) =>
+      res.status(403).json({ message: "Something went wrong.", error: err })
+    );
+});
 handler.put(async (req, result) => {
   await Distributer.updateOne({ _id: req.body._id }, req.body)
     .then((res) => {

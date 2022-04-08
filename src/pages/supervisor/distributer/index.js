@@ -44,7 +44,7 @@ export default function Distributer({
   limit,
   supervisors,
 }) {
-  const color = "dark";
+  const color = "light";
   const [preview, setPreview] = useState(null);
   const router = useRouter();
   const previewRef = useRef(null);
