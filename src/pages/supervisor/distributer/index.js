@@ -34,6 +34,7 @@ export async function getServerSideProps(context) {
       distributerCount: distributerCount,
       supervisors: Jsonify(supervisors),
       limit: limit,
+      state: supervisor.state,
     },
   };
 }
@@ -43,6 +44,7 @@ export default function Distributer({
   distributerCount,
   limit,
   supervisors,
+  state,
 }) {
   const color = "light";
   const [preview, setPreview] = useState(null);
@@ -95,11 +97,25 @@ export default function Distributer({
   // const [search, setSearch] = React.useState("");
 
   const handleSearch = ({ target }) => {
-    setDistributerState(
-      distributer.filter((item) =>
-        item.name.toLowerCase().includes(target.value.toLowerCase())
-      )
-    );
+    if (target.value.startsWith(" ") || target.value.length < 1) {
+      setDistributerState(distributer);
+    } else {
+      axios
+        .get(
+          `/api/supervisor/distributerByState?state=${state}&name=${target.value}`
+        )
+        .then(({ data }) => setDistributerState(data.distributer))
+        .catch((e) => console.log(e));
+    }
+
+    // setDistributerState(
+    //   distributer.filter(
+    //     (item) =>
+    //       item.name.toLowerCase().includes(target.value.toLowerCase()) ||
+    //       item.state.toLowerCase().includes(target.value.toLowerCase()) ||
+    //       item.city.toLowerCase().includes(target.value.toLowerCase())
+    //   )
+    // );
   };
 
   // const data = {
@@ -156,9 +172,10 @@ export default function Distributer({
 
           <div className="m-5 md:flex">
             <Input
-              placeholder="Search Distributor"
+              placeholder="Search Distributor and City"
               variant="standard"
-              className="text-white"
+              // className="text-white"
+              className="w-1/2 xl:w-1/3 sm:w-1/2"
               onChange={handleSearch}
             />
           </div>

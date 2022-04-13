@@ -163,9 +163,9 @@ export default function Distributer({
 
           <div className="m-5 md:flex">
             <Input
-              placeholder="Search Distributor"
+              placeholder="Search by Name,State and City"
               variant="standard"
-              className="text-black "
+              className="w-1/2 xl:w-1/3 sm:w-1/2"
               onChange={handleSearch}
             />
           </div>

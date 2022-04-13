@@ -4,6 +4,18 @@ import Supervisor from "models/Supervisor";
 
 const handler = createHandler();
 
+export function capitalize(str) {
+  var splitStr = str.toLowerCase().split(" ");
+  for (var i = 0; i < splitStr.length; i++) {
+    // You do not need to check if i is larger than splitStr length, as your for does that for you
+    // Assign it back to the array
+    splitStr[i] =
+      splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+  }
+  // Directly return the joined string
+  return splitStr.join(" ");
+}
+
 handler.post(async (req, res) => {
   //   console.log(req.body);
   const data = req.body;
@@ -42,7 +54,14 @@ handler.delete(async (req, res) => {
 });
 
 handler.get(async (req, res) => {
-  Supervisor.find({ name: { $regex: req.query.name.toLowerCase() } })
+  // console.log();
+  Supervisor.find({
+    $or: [
+      { name: { $regex: req.query.name.toLowerCase() } },
+      { city: { $regex: capitalize(req.query.name.toLowerCase()) } },
+      { state: { $regex: capitalize(req.query.name.toLowerCase()) } },
+    ],
+  })
     .then((data) => res.status(200).json({ supervisor: data }))
     .catch((err) =>
       res.status(403).json({ message: "Something went wrong", error: err })

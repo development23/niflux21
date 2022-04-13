@@ -100,11 +100,11 @@ export default function Supervisor({ supervisors, supervisorsCount, limit }) {
             </div>
           </div>
 
-          <div className="m-5 md:flex">
+          <div className="m-5 md:flex w-full">
             <Input
-              placeholder="Search Supervisor"
+              placeholder="Search by Name,State and City"
               variant="standard"
-              // className="text-white"
+              className="w-1/2 xl:w-1/3 sm:w-1/2"
               onChange={handleSearch}
             />
           </div>

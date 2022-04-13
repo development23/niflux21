@@ -27,7 +27,7 @@ export async function getServerSideProps(context) {
   }).count();
   const employees = await EmployeeModel.find({ supervisor: session.id })
     .limit(limit)
-    .sort({ createdAt: "desc" })
+    .sort({ name: 1 })
     .skip(page ? (page - 1) * limit : 0)
     .exec();
 
@@ -62,14 +62,18 @@ export default function Employee({
   useEffect(() => {}, [session]);
 
   const handleSearch = ({ target }) => {
-    setEmployeeState(
-      employees.filter(
-        (item) =>
-          item.name.toLowerCase().includes(target.value.toLowerCase()) ||
-          item.phone.toLowerCase().includes(target.value.toLowerCase()) ||
-          item.city.toLowerCase().includes(target.value.toLowerCase())
-      )
-    );
+    // console.log(target.value.length);
+
+    if (target.value.startsWith(" ") || target.value.length < 1) {
+      setEmployeeState(employees);
+    } else {
+      axios
+        .get(
+          `/api/supervisor/employee/searchBySupervisorId?name=${target.value}&supervisorId=${supervisor}`
+        )
+        .then(({ data }) => setEmployeeState(data.distributer))
+        .catch((e) => console.log(e));
+    }
   };
 
   return (
@@ -127,8 +131,9 @@ export default function Employee({
 
           <div className="m-5 md:flex">
             <Input
-              placeholder="Search Employee"
+              placeholder="Search by Name,State and City"
               variant="standard"
+              className="w-1/2 xl:w-1/3 sm:w-1/2"
               onChange={handleSearch}
             />
           </div>

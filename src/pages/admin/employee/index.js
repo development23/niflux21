@@ -161,9 +161,10 @@ export default function Employee({
 
           <div className="m-5 md:flex">
             <Input
-              placeholder="Search Employee"
+              placeholder="Search by Name,State and City"
               variant="standard"
               // className="text-white"
+              className="w-1/2 xl:w-1/3 sm:w-1/2"
               onChange={handleSearch}
             />
           </div>
