@@ -120,6 +120,11 @@ const employeeSchema = new mongoose.Schema(
               type: [String],
               default: [],
             },
+            expensesAmount: {
+              type: String,
+              default: null,
+            },
+
             beatType: {
               type: String,
               default: "Local",

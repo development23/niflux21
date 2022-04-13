@@ -92,6 +92,7 @@ handler.get(async (req, res) => {
           remarks: 1,
           _id: 1,
           expenses: 1,
+          expensesAmount: 1,
         },
         // disObj: { $toObjectId: "$beats.distributer" },
       },

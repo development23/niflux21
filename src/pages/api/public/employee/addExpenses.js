@@ -6,6 +6,7 @@ import moment from "moment";
 const handler = createHandler();
 
 handler.put((req, result) => {
+  // console.log(req.body);
   Employee.updateOne(
     {
       _id: req.body.id,
@@ -14,6 +15,9 @@ handler.put((req, result) => {
     {
       $push: {
         "beats.$.expenses": req.body.expenses,
+      },
+      $set: {
+        "beats.$.expensesAmount": req.body.expensesAmount,
       },
     }
   )
